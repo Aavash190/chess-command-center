@@ -1,0 +1,19 @@
+# Chess CommandCenter - Private Data Protection
+# Ignore all course material to prevent leaks to GitHub
+Course Database/
+
+# Ignore local dev files
+.DS_Store
+node_modules/
+.env
+*.log
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# User Personal Materials
+Personal Lab/
+Course Database/
+Course Database/**/*
+Course Database/**

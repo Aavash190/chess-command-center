@@ -12,6 +12,10 @@
  */
 
 // ─── Main Entry Point ─────────────────────────────────────────────────────────
+// Track session stats globally within this module
+let sessionCorrect = 0;
+let sessionTotal = 0;
+
 function renderCourseCard(data) {
     const container = document.getElementById('course-card-container');
     if (!container) return;
@@ -65,9 +69,12 @@ function renderCourseCard(data) {
                     <div class="cc-badge-row">
                         <span class="cc-badge">Course ${cIdx + 1} of ${courses.length}</span>
                         ${bestScore > 0 ? `<span class="cc-badge cc-badge-gold">🏅 Best: ${bestScore}%</span>` : ''}
+                        ${(window.srEngine && window.srEngine.getReviewCount(courseData.title) > 0) 
+                            ? `<span class="sr-review-badge">🔥 ${window.srEngine.getReviewCount(courseData.title)} Review Due</span>` : ''}
                     </div>
                     <h2 class="cc-title">${courseData.title}</h2>
                     <p class="cc-mission">${courseData.mission}</p>
+                    ${courseData.benefits ? `<div class="cc-benefit">${courseData.benefits}</div>` : ''}
                     <div class="cc-info-grid">
                         <div class="cc-info-item">
                             <span class="cc-info-label">Daily Job</span>
@@ -85,6 +92,14 @@ function renderCourseCard(data) {
                             <span class="cc-info-label">Volume</span>
                             <span class="cc-info-value">${courseData.stats}</span>
                         </div>
+                        <div class="cc-info-item">
+                            <span class="cc-info-label">Material Quality</span>
+                            <span class="cc-info-value" style="color:var(--accent-gold);">${courseData.courseDetails?.quality || 'World-Class'}</span>
+                        </div>
+                        <div class="cc-info-item" style="grid-column: span 2;">
+                            <span class="cc-info-label">Accolades</span>
+                            <span class="cc-info-value" style="font-style:italic;">"${courseData.courseDetails?.accolades || 'Top Rated study material'}"</span>
+                        </div>
                     </div>
                     <div class="cc-syllabus">
                         <div class="cc-syllabus-header">
@@ -97,6 +112,24 @@ function renderCourseCard(data) {
                         </div>
                         <div class="cc-modules">${moduleRows}</div>
                     </div>
+
+                    ${courseData.videos ? `
+                    <div class="cc-video-library" style="margin-top:20px;">
+                        <div class="cc-syllabus-header">
+                            <span>🎥 Local Video Library</span>
+                            <span class="cc-badge" style="background:var(--accent);">Private</span>
+                        </div>
+                        <div class="cc-video-list" style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 8px; margin-top:10px;">
+                            ${courseData.videos.map(v => `
+                                <div class="cc-module-row cc-video-row" style="cursor:pointer;" onclick="window.open('${v.path}', '_blank')">
+                                    <span class="cc-module-title">▶ ${v.title}</span>
+                                    <span class="cc-module-len" style="color:var(--cyan);">Play MP4</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+
                     <div class="cc-progress-section" id="cc-progress-sec-${courseKey}">
                         <div class="cc-progress-header">
                             <span>Training Progress</span>
@@ -191,6 +224,9 @@ function renderCourseCard(data) {
             ccLoadPGN(courseKey, session.pgn, session.moveIdx || 0, session.score);
         }
     });
+
+    // Global UI setup
+    setupEliteControls();
 }
 
 // ─── Trainer Toggle ───────────────────────────────────────────────────────────
@@ -223,8 +259,8 @@ function toggleCourseTrainer(courseKey) {
                 return;
             }
 
-            // Construct the path to the human-readable Course Database folder
-            const url = encodeURI(`Course Database/Month ${mNum}/${courseTitle}.pgn`);
+            // Construct the path to the human-readable Course Database folder (Materials Lab)
+            const url = encodeURI(`Course Database/Month ${mNum}/${courseTitle}/PGNs/${courseTitle}.pgn`);
             
             const uploadZone = document.getElementById(`cc-upload-${courseKey}`);
             if (uploadZone) {
@@ -331,8 +367,16 @@ function ccLoadPGN(monthKey, pgn, startIdx = 0, savedScore = null) {
     ccState[monthKey] = {
         game, moves, moveIdx: startIdx,
         score: savedScore ? { ...savedScore } : { correct: 0, total: 0 },
-        pgn, orientation: 'white', hintUsed: false, awaiting: true
+        pgn, orientation: 'white', hintUsed: false, awaiting: true,
+        courseTitle: null // Will be set below
     };
+
+    // Extract course title for SR
+    const match = monthKey.match(/m(\d+)_c(\d+)/);
+    if (match) {
+        const mData = window.chessCurriculum[match[1]-1];
+        ccState[monthKey].courseTitle = mData.courses[match[2]].title;
+    }
 
     // Hide upload, show board
     const upload = document.getElementById(`cc-upload-${monthKey}`);
@@ -399,6 +443,23 @@ function ccCorrect(monthKey, correctMove) {
 
     if (!s.hintUsed) s.score.correct++;
     s.score.total++;
+    
+    // Session Stats & XP
+    sessionCorrect++;
+    sessionTotal++;
+    updateSessionUI();
+    
+    if (window.cmdCenter) {
+        window.cmdCenter.xp += 10;
+        window.cmdCenter.updateXPDisplay();
+    }
+    
+    // Spaced Repetition Update
+    if (window.srEngine && s.courseTitle) {
+        const movePath = `${s.moveIdx}`; // Relative to current PGN
+        window.srEngine.updateLearningState(s.courseTitle, movePath, true);
+    }
+
     ccLog(monthKey, correctMove, true);
     ccFeedback(monthKey, `✅ Correct! ${s.hintUsed ? '(Hint — no point)' : '+1 Point! ✨'}`, 'correct');
 
@@ -433,6 +494,16 @@ function ccCorrect(monthKey, correctMove) {
 function ccWrong(monthKey, attempted, correct) {
     const s = ccState[monthKey];
     s.score.total++;
+    
+    sessionTotal++;
+    updateSessionUI();
+    
+    // Spaced Repetition Reset
+    if (window.srEngine && s.courseTitle) {
+        const movePath = `${s.moveIdx}`;
+        window.srEngine.updateLearningState(s.courseTitle, movePath, false);
+    }
+
     ccLog(monthKey, { san: attempted.san + ' ✗' }, false);
     ccFeedback(monthKey, `❌ ${attempted.san} is not right — think deeper!`, 'wrong');
     ccUpdateUI(monthKey);
@@ -529,7 +600,10 @@ function ccUpdateUI(monthKey) {
     if (totEl)   totEl.textContent   = s.moves.length;
     if (turnEl && s.moveIdx < s.moves.length) {
         const m = s.moves[s.moveIdx];
-        turnEl.textContent = m.color === 'w' ? '⬜ White to move' : '⬛ Black to move';
+        const state = window.srEngine ? window.srEngine.getLearningState(s.courseTitle, `${s.moveIdx}`) : null;
+        const levelHtml = state ? `<span class="sr-level-tag ${state.level === 8 ? 'sr-level-mastered' : ''}">LVL ${state.level}/8</span>` : '';
+        
+        turnEl.innerHTML = `${m.color === 'w' ? '⬜ White to move' : '⬛ Black to move'} ${levelHtml}`;
     }
     ccUpdateProgressBar(monthKey);
 }
@@ -599,3 +673,38 @@ function ccToast(msg) {
     c.appendChild(t); void t.offsetWidth; t.classList.add('show');
     setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 4500);
 }
+
+function setupEliteControls() {
+    const controlBar = document.getElementById('trainer-master-controls');
+    if (!controlBar) return;
+    controlBar.style.display = 'flex';
+
+    const blindfoldToggle = document.getElementById('blindfold-toggle');
+    const coordToggle = document.getElementById('coordinates-toggle');
+
+    blindfoldToggle.onchange = (e) => {
+        document.querySelectorAll('.piece-417db').forEach(p => {
+            p.style.opacity = e.target.checked ? '0' : '1';
+        });
+    };
+
+    coordToggle.onchange = (e) => {
+        document.querySelectorAll('.alpha-d227b, .numeric-fc99c').forEach(l => {
+            l.style.display = e.target.checked ? 'block' : 'none';
+        });
+    };
+
+    document.onkeydown = (e) => {
+        if (e.key === 'l' || e.key === 'L') blindfoldToggle.click();
+        if (e.key === 'c' || e.key === 'C') coordToggle.click();
+    };
+}
+
+function updateSessionUI() {
+    const correctEl = document.getElementById('session-correct');
+    const totalEl = document.getElementById('session-total');
+    if (correctEl) correctEl.innerText = sessionCorrect;
+    if (totalEl) totalEl.innerText = sessionTotal;
+}
+
+window.renderCourseCard = renderCourseCard;
