@@ -27,8 +27,9 @@
             <div style="font-size: 3rem; margin-bottom: 10px; text-shadow: 0 0 20px rgba(255,215,0,0.5);">♔</div>
             <h2 style="font-size: 2.5rem; margin-bottom: 15px; color: var(--accent); text-transform: uppercase; letter-spacing: 3px;">The Road to 2400 FIDE</h2>
             <p style="color: var(--text-main); font-size: 1.1rem; line-height: 1.6;">
-                You are about to begin a rigorous 12-month curriculum designed to elevate your play to the International Master level.<br>
-                Review the masterclasses below. This requires immense discipline, extreme focus, and daily dedication. Are you ready?
+                You are starting from a solid **1773 foundation**.<br>
+                Success is a choice. We are aiming for the **International Master (2400)** threshold.<br>
+                This roadmap requires immense discipline, extreme focus, and daily dedication. Are you ready?
             </p>
         </div>
 
@@ -44,66 +45,157 @@
         </div>
     </div>
 
-    <div id="app" style="display: none;">
-        <header>
-            <h1>Chess Command Center</h1>
-            <p class="subtitle">IM-Level Performance Dashboard • 2026</p>
-            
-            <!-- Journey Tracker Widget -->
-            <div id="journey-tracker-widget" style="display: none; max-width: 400px; margin: 25px auto 0; padding: 12px 20px; background: rgba(0, 242, 255, 0.05); border: 1px solid rgba(0, 242, 255, 0.2); border-radius: 12px; backdrop-filter: blur(10px);">
-                <div style="font-size: 0.75rem; color: var(--cyan); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 4px;">Mission Timeline</div>
-                <div id="journey-start-date" style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 4px;">Started: --</div>
-                <div id="journey-days-elapsed" style="font-size: 1.1rem; font-weight: 600; color: var(--text-main);">Day -- of 365</div>
+        <header style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <h1 style="margin-bottom: 4px;">CHESS COMMAND CENTER</h1>
+                <p class="subtitle" style="letter-spacing: 1px; font-weight: 600; color: var(--theme-accent);">ELITE MASTERY PORTAL • 2400 FIDE TRACK</p>
             </div>
-
-            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                <a href="library.html" class="reset-btn" style="text-decoration: none; display: inline-block;">Open Strategy Library</a>
+            <div class="header-nav">
+                <button id="view-dashboard-btn" class="nav-tab active">DASHBOARD</button>
+                <button id="view-lab-btn" class="nav-tab">MATERIAL LAB</button>
             </div>
         </header>
 
         <nav class="timeline" id="month-nav">
             <!-- Dynamic Month Buttons -->
-        </nav>        <main class="dashboard-grid">
-            <!-- Left: Rich Course Card (rendered by course-card.js) -->
-            <section class="card" id="curriculum-card" style="padding: 24px;">
-                <div id="course-card-container"></div>
-            </section>
+        </nav>
 
-            <!-- Right: Daily Checklist Card -->
-            <section class="card checklist-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="font-size: 1.5rem;">Daily Command Checklist</h2>
-                    <button class="reset-btn" id="daily-reset-btn">Reset for Tomorrow</button>
-                </div>
-                <div class="task-list" id="task-list">
-                    <!-- Dynamic Task Items -->
-                </div>
+        <!-- Elite Status Bar (Current Focus) -->
+        <div id="daily-status-bar" class="premium-status-bar">
+            <div class="status-group">
+                <span class="status-label">CURRENT FOCUS:</span>
+                <span id="active-focus-text" class="status-value">DETECTING...</span>
+            </div>
+            <div class="status-group" style="position: relative;">
+                <span class="status-label">OBJECTIVE: <span class="info-icon" id="rank-info-trigger">ⓘ</span></span>
+                <span id="user-rank-text" class="status-value">Advanced Club Player</span>
                 
-                <div id="progress-footer" style="margin-top: 30px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
-                    <p id="completion-text" style="color: var(--cyan); font-weight: 600;">Monthly Strength Gain: 0%</p>
+                <div id="rank-progression-popup" class="rank-popup">
+                    <h3>🏆 Mastery Progression</h3>
+                    <ul>
+                        <li><span class="rank-lvl">LVL 1</span> Advanced Club Player (1700)</li>
+                        <li><span class="rank-lvl">LVL 2</span> Expert (2000)</li>
+                        <li><span class="rank-lvl">LVL 3</span> Candidate Master (CM) [2100]</li>
+                        <li class="rank-fm"><span class="rank-lvl">LVL 4</span> FIDE Master (FM) [2300]</li>
+                        <li class="rank-im"><span class="rank-lvl">LVL 5</span> International Master (IM) [2400]</li>
+                    </ul>
                 </div>
-            </section>
+            </div>
+            <div class="status-group">
+                <span class="status-label">DAILY XP:</span>
+                <span id="daily-xp-text" class="status-value">0 / 500</span>
+            </div>
+        </div>
+
+        <main id="main-content">
+            <div id="dashboard-view" class="dashboard-grid">
+                <!-- Sidebar: Tasks & Progress -->
+                <aside class="checklist-card">
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.2rem; margin-bottom: 20px; color: var(--text-main);">Daily Command Checklist</h3>
+                        <div id="task-list" class="task-list">
+                            <!-- Tasks inject here -->
+                        </div>
+                    </div>
+
+                    <div id="exam-trigger-container" style="display: none;">
+                        <button id="start-exam-btn" class="exam-btn">
+                            <span>⚔️ TAKE MONTHLY EXAM</span>
+                        </button>
+                        <p style="font-size: 0.75rem; color: var(--text-dim); text-align: center; margin-top: 10px;">
+                            Pass the exam to advance to the next month
+                        </p>
+                    </div>
+
+                    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
+                        <div id="journey-tracker-widget" style="display: none; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--glass-border);">
+                            <div id="journey-days-elapsed" style="font-family: 'Outfit'; font-weight: 800; color: var(--theme-accent); margin-bottom: 5px; font-size: 1.1rem;"></div>
+                            <div id="journey-start-date" style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;"></div>
+                        </div>
+                        <div id="completion-text" style="font-family: 'Outfit'; font-weight: 800; color: var(--accent); margin-top: 20px; font-size: 1rem; text-align: center;">
+                            MONTHLY STRENGTH GAIN: 0%
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main: Curriculum & Trainer -->
+                <section id="curriculum-card">
+                    <!-- Trainer Elite Controls -->
+                    <div id="trainer-master-controls" class="trainer-controls" style="display: none; margin-bottom: 25px; padding: 15px 20px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 8px; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 20px;">
+                            <label class="control-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="blindfold-toggle" style="accent-color: var(--accent);">
+                                <span class="control-label" style="font-size: 0.7rem; font-weight: 800; color: var(--text-dim); letter-spacing: 1px;">BLINDFOLD MODE</span>
+                            </label>
+                            <label class="control-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="coordinates-toggle" checked style="accent-color: var(--accent);">
+                                <span class="control-label" style="font-size: 0.7rem; font-weight: 800; color: var(--text-dim); letter-spacing: 1px;">COORDINATES</span>
+                            </label>
+                        </div>
+                        <div id="trainer-stats" style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">
+                            SESSION: <span id="session-correct" style="color: var(--theme-accent);">0</span> / <span id="session-total">0</span>
+                        </div>
+                    </div>
+
+                    <div id="course-card-container">
+                        <!-- Course details inject here -->
+                    </div>
+                </section>
+            </div>
+
+            <div id="lab-view" style="display: none;">
+                <div class="lab-container">
+                    <div class="lab-sidebar">
+                        <h2 class="cc-title" style="font-size: 1.5rem;">Material Lab</h2>
+                        <p class="cc-mission">PRACTICE ANY PGN</p>
+                        
+                        <div class="lab-upload-box">
+                            <label for="lab-pgn-upload" class="cc-btn-primary" style="display: block; text-align: center; cursor: pointer;">
+                                📁 UPLOAD PGN FILE
+                            </label>
+                            <input type="file" id="lab-pgn-upload" style="display: none;" accept=".pgn">
+                            <p style="font-size: 0.7rem; color: var(--text-dim); margin-top: 10px;">
+                                Your files are processed locally. Nothing is uploaded to any server.
+                            </p>
+                        </div>
+
+                        <div id="lab-controls" style="margin-top: 20px;">
+                            <button class="cc-btn-secondary" onclick="if(window.lab) window.lab.resetTraining()">🔄 Reset Line</button>
+                        </div>
+                    </div>
+
+                    <div class="lab-board-area">
+                        <div id="lab-board" style="width: 100%; max-width: 500px; margin: 0 auto; border: 4px solid var(--glass-border); border-radius: 8px;"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <!-- Reward Overlay -->
+    <!-- Reward Popup -->
     <div id="reward-overlay">
         <div class="reward-card">
             <div class="reward-icon">🏆</div>
-            <h2 id="reward-title">MONTH COMPLETE</h2>
-            <p id="reward-desc" style="margin: 15px 0; color: var(--text-dim);"></p>
-            <button class="close-reward" id="close-reward">CONTINUE MISSION</button>
+            <h2 id="reward-title" style="margin-bottom: 10px; font-family: 'Outfit';"></h2>
+            <div id="reward-desc"></div>
+            <button class="close-reward cc-btn-primary" id="close-reward" style="margin-top: 30px;">CONTINUE TO NEXT PHASE</button>
         </div>
     </div>
 
     <div id="toast-container" class="toast-container"></div>
 
-    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- PGN Tools -->
+    <script src="https://cdn.jsdelivr.net/npm/chess.js@0.10.3/chess.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script src="https://unpkg.com/chess.js@0.11.0/chess.js"></script>
-    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    
+    <!-- App Logic -->
+    <script src="positivity.js"></script>
+    <script src="sr-engine.js"></script>
     <script src="data.js"></script>
-    <script src="app.js"></script>
     <script src="course-card.js"></script>
+    <script src="exam.js"></script>
+    <script src="lab.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
