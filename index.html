@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHESS COMMAND CENTER | Elite Mastery</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="intro-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-dark); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; padding: 20px;">
+        <div style="max-width: 650px; width: 100%; text-align: center; padding: 45px 40px; background: rgba(255,255,255,0.03); border-radius: 24px; border: 1px solid var(--glass-border); backdrop-filter: blur(20px);">
+            <!-- GM Photo -->
+            <div style="position: relative; width: 140px; height: 140px; margin: 0 auto 24px; border-radius: 50%; overflow: hidden; border: 2px solid var(--accent); box-shadow: 0 0 30px rgba(255,215,0,0.2);">
+                <img id="intro-gm-img" src="" alt="" style="width: 100%; height: 100%; object-fit: cover; object-position: top;">
+                <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.5));"></div>
+            </div>
+            <h2 id="intro-quote" style="font-size: 1.5rem; font-style: italic; color: var(--text-light); margin-bottom: 18px; line-height: 1.6; font-weight: 400;"></h2>
+            <p id="intro-author" style="color: var(--accent); font-weight: 700; font-size: 1rem; letter-spacing: 2px; margin-bottom: 36px; text-transform: uppercase;"></p>
+            <button class="hero-link" id="enter-cmd-btn" style="border: none; cursor: pointer; font-size: 1.05rem; padding: 14px 40px;">ENTER COMMAND CENTER</button>
+        </div>
+    </div>
+
+    <!-- Onboarding Overview Overlay (First Time Only) -->
+    <div id="onboarding-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10,10,11,0.98); z-index: 9999; flex-direction: column; align-items: center; padding: 40px 20px; overflow-y: auto;">
+        
+        <div style="max-width: 900px; width: 100%; text-align: center; margin-bottom: 30px;">
+            <div style="font-size: 3rem; margin-bottom: 10px; text-shadow: 0 0 20px rgba(255,215,0,0.5);">♔</div>
+            <h2 style="font-size: 2.5rem; margin-bottom: 15px; color: var(--accent); text-transform: uppercase; letter-spacing: 3px;">The Road to 2400 FIDE</h2>
+            <p style="color: var(--text-main); font-size: 1.1rem; line-height: 1.6;">
+                You are about to begin a rigorous 12-month curriculum designed to elevate your play to the International Master level.<br>
+                Review the masterclasses below. This requires immense discipline, extreme focus, and daily dedication. Are you ready?
+            </p>
+        </div>
+
+        <!-- Dynamic Roadmap Container -->
+        <div id="onboarding-roadmap" style="max-width: 1000px; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px;">
+            <!-- Rendered by app.js -->
+        </div>
+
+        <div style="padding-bottom: 60px;">
+            <button class="hero-link" id="initiate-journey-btn" style="border: none; cursor: pointer; font-size: 1.2rem; padding: 18px 60px; background: linear-gradient(135deg, var(--accent), #ffb300); color: #000; box-shadow: 0 0 30px rgba(255,215,0,0.4); text-transform: uppercase; font-weight: 800; letter-spacing: 2px;">
+                I AM READY. INITIATE JOURNEY
+            </button>
+        </div>
+    </div>
+
+    <div id="app" style="display: none;">
+        <header>
+            <h1>Chess Command Center</h1>
+            <p class="subtitle">IM-Level Performance Dashboard • 2026</p>
+            
+            <!-- Journey Tracker Widget -->
+            <div id="journey-tracker-widget" style="display: none; max-width: 400px; margin: 25px auto 0; padding: 12px 20px; background: rgba(0, 242, 255, 0.05); border: 1px solid rgba(0, 242, 255, 0.2); border-radius: 12px; backdrop-filter: blur(10px);">
+                <div style="font-size: 0.75rem; color: var(--cyan); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 4px;">Mission Timeline</div>
+                <div id="journey-start-date" style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 4px;">Started: --</div>
+                <div id="journey-days-elapsed" style="font-size: 1.1rem; font-weight: 600; color: var(--text-main);">Day -- of 365</div>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <a href="library.html" class="reset-btn" style="text-decoration: none; display: inline-block;">Open Strategy Library</a>
+            </div>
+        </header>
+
+        <nav class="timeline" id="month-nav">
+            <!-- Dynamic Month Buttons -->
+        </nav>        <main class="dashboard-grid">
+            <!-- Left: Rich Course Card (rendered by course-card.js) -->
+            <section class="card" id="curriculum-card" style="padding: 24px;">
+                <div id="course-card-container"></div>
+            </section>
+
+            <!-- Right: Daily Checklist Card -->
+            <section class="card checklist-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="font-size: 1.5rem;">Daily Command Checklist</h2>
+                    <button class="reset-btn" id="daily-reset-btn">Reset for Tomorrow</button>
+                </div>
+                <div class="task-list" id="task-list">
+                    <!-- Dynamic Task Items -->
+                </div>
+                
+                <div id="progress-footer" style="margin-top: 30px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
+                    <p id="completion-text" style="color: var(--cyan); font-weight: 600;">Monthly Strength Gain: 0%</p>
+                </div>
+            </section>
+    </div>
+
+    <!-- Reward Overlay -->
+    <div id="reward-overlay">
+        <div class="reward-card">
+            <div class="reward-icon">🏆</div>
+            <h2 id="reward-title">MONTH COMPLETE</h2>
+            <p id="reward-desc" style="margin: 15px 0; color: var(--text-dim);"></p>
+            <button class="close-reward" id="close-reward">CONTINUE MISSION</button>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://unpkg.com/chess.js@0.11.0/chess.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="course-card.js"></script>
+</body>
+</html>

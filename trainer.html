@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PGN Chess Trainer | Chess Command Center</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chessboard.js -->
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    <style>
+        /* --- Trainer-Specific Styles --- */
+        .trainer-header {
+            text-align: center;
+            padding: 30px 20px 10px;
+            position: relative;
+        }
+        .trainer-header h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        .trainer-header .back-link {
+            position: absolute;
+            left: 20px;
+            top: 36px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+        .trainer-header .back-link:hover { color: var(--accent); }
+
+        /* Upload Zone */
+        .upload-zone {
+            max-width: 700px;
+            margin: 30px auto;
+            border: 2px dashed rgba(255, 215, 0, 0.3);
+            border-radius: 16px;
+            padding: 50px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.02);
+        }
+        .upload-zone:hover, .upload-zone.drag-over {
+            border-color: var(--accent);
+            background: rgba(255, 215, 0, 0.05);
+        }
+        .upload-zone .upload-icon { font-size: 3rem; margin-bottom: 15px; }
+        .upload-zone h2 { font-size: 1.4rem; margin-bottom: 8px; color: var(--text-light); }
+        .upload-zone p { color: var(--text-dim); font-size: 0.9rem; }
+        .upload-zone input { display: none; }
+
+        /* Trainer Layout */
+        .trainer-layout {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+            align-items: start;
+        }
+        .trainer-layout.active { display: grid; }
+
+        /* Board Panel */
+        .board-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(20px);
+        }
+        #board-wrapper {
+            width: 100%;
+        }
+        #board-wrapper .board-b72b1 {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .board-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        .board-controls button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.05);
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+        .board-controls button:hover {
+            background: rgba(255,215,0,0.1);
+            border-color: var(--accent);
+        }
+
+        /* Quiz Panel */
+        .quiz-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .quiz-info-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(20px);
+        }
+        .quiz-question {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        .quiz-side {
+            font-size: 1rem;
+            color: var(--cyan);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .quiz-feedback {
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            display: none;
+            animation: feedbackPop 0.3s ease;
+        }
+        .quiz-feedback.correct {
+            background: rgba(0, 200, 100, 0.15);
+            border: 1px solid rgba(0, 200, 100, 0.4);
+            color: #00c864;
+            display: block;
+        }
+        .quiz-feedback.wrong {
+            background: rgba(255, 80, 80, 0.15);
+            border: 1px solid rgba(255, 80, 80, 0.4);
+            color: #ff5050;
+            display: block;
+        }
+        @keyframes feedbackPop {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .score-card {
+            background: var(--glass-bg);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 16px;
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .score-label { color: var(--text-dim); font-size: 0.9rem; }
+        .score-value { font-size: 2rem; font-weight: 700; color: var(--accent); }
+        .move-history {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+        .move-history h3 {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        .move-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+        .move-item.correct-move { background: rgba(0,200,100,0.08); }
+        .move-item.wrong-move { background: rgba(255,80,80,0.08); }
+        .move-num { color: var(--text-dim); }
+        .move-san { color: var(--text-light); font-family: monospace; font-weight: 600; }
+
+        /* Game Selector */
+        .game-selector {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            display: none;
+        }
+        .game-selector.active { display: block; }
+        .game-selector h2 { margin-bottom: 15px; color: var(--text-light); }
+        .game-list { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto; }
+        .game-list-item {
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+        }
+        .game-list-item:hover {
+            border-color: var(--accent);
+            background: rgba(255,215,0,0.05);
+        }
+
+        /* Hint button */
+        .hint-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            background: rgba(0, 242, 255, 0.05);
+            color: var(--cyan);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .hint-btn:hover { background: rgba(0, 242, 255, 0.12); }
+        .hint-text {
+            margin-top: 10px;
+            color: var(--cyan);
+            font-style: italic;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .trainer-layout { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div id="trainer-app">
+        <div class="trainer-header">
+            <a href="index.html" class="back-link">← Dashboard</a>
+            <h1>♟ PGN Chess Trainer</h1>
+            <p class="subtitle">Upload a course PGN — get tested on every position</p>
+        </div>
+
+        <!-- Upload Zone -->
+        <div class="upload-zone" id="upload-zone">
+            <div class="upload-icon">📂</div>
+            <h2>Drop your PGN file here</h2>
+            <p>Upload any Chessable course export or your own game PGN.<br>You will be tested move by move.</p>
+            <p style="margin-top: 10px; color: var(--accent); font-size: 0.85rem;">Click to browse or drag & drop a .pgn file</p>
+            <input type="file" id="pgn-file-input" accept=".pgn">
+        </div>
+
+        <!-- Game Selector (shown when PGN has multiple games) -->
+        <div class="game-selector" id="game-selector">
+            <h2>Choose a Game / Position Set</h2>
+            <div class="game-list" id="game-list"></div>
+        </div>
+
+        <!-- Main Trainer Layout -->
+        <div class="trainer-layout" id="trainer-layout">
+
+            <!-- Left: Board -->
+            <div class="board-panel">
+                <div id="board-wrapper">
+                    <div id="chessboard"></div>
+                </div>
+                <div class="board-controls">
+                    <button id="prev-btn">◀ Prev</button>
+                    <button id="flip-btn">⇅ Flip</button>
+                    <button id="next-btn">Skip ▶</button>
+                </div>
+            </div>
+
+            <!-- Right: Quiz -->
+            <div class="quiz-panel">
+                <!-- Score -->
+                <div class="score-card">
+                    <div>
+                        <div class="score-label">Session Score</div>
+                        <div class="score-value" id="score-display">0 / 0</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="score-label">Position</div>
+                        <div class="score-value" id="pos-display">1</div>
+                    </div>
+                </div>
+
+                <!-- Question -->
+                <div class="quiz-info-card">
+                    <div class="quiz-question">What is the best move?</div>
+                    <div class="quiz-side" id="side-to-move">⬜ White to move</div>
+                    <div class="quiz-feedback" id="feedback-box"></div>
+                    <button class="hint-btn" id="hint-btn">💡 Show Piece Hint</button>
+                    <div class="hint-text" id="hint-text"></div>
+                </div>
+
+                <!-- Move History -->
+                <div class="move-history">
+                    <h3>Move Log</h3>
+                    <div id="move-log"></div>
+                </div>
+
+                <!-- Upload another -->
+                <button class="reset-btn" id="new-upload-btn" style="width: 100%; text-align: center;">Upload Different PGN</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Chess Libraries -->
+    <script src="https://unpkg.com/chess.js@0.11.0/chess.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="data.js"></script>
+    <script src="trainer.js"></script>
+</body>
+</html>
