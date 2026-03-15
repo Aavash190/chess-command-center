@@ -52,11 +52,11 @@ class CommandCenter {
     setupIntroScreen() {
         // ... (Quotes as before)
         const gmIntros = [
-            { author: "GM Garry Kasparov", quote: "Hard work is a talent. The ability to keep pushing yourself when everyone else has quit is a talent.", image: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Garry_Kasparov_-_1987_-_cropped.jpg" },
-            { author: "GM Magnus Carlsen", quote: "Without the element of enjoyment, it is not worth trying to excel at anything.", image: "https://upload.wikimedia.org/wikipedia/commons/b/b8/Magnus_Carlsen_%28cropped%29.jpg" },
-            { author: "GM Bobby Fischer", quote: "You have to have the fighting spirit. You have to force moves and take chances.", image: "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bobby_Fischer_1960_in_Leipzig.jpg" },
-            { author: "GM Viswanathan Anand", quote: "Confidence comes from hours and days and weeks and years of constant work and dedication.", image: "https://upload.wikimedia.org/wikipedia/commons/5/57/Viswanathan_Anand_%282016%29_%28cropped%29.jpeg" },
-            { author: "GM Judit Polgár", quote: "Chess is not about memorizing moves. It's about understanding ideas.", image: "https://upload.wikimedia.org/wikipedia/commons/6/6b/Judit_Polgar_%28cropped%29.jpg" }
+            { author: "GM Garry Kasparov", quote: "Hard work is a talent. The ability to keep pushing yourself when everyone else has quit is a talent.", image: "assets/gm/kasparov.jpg" },
+            { author: "GM Magnus Carlsen", quote: "Without the element of enjoyment, it is not worth trying to excel at anything.", image: "assets/gm/carlsen.jpg" },
+            { author: "GM Bobby Fischer", quote: "You have to have the fighting spirit. You have to force moves and take chances.", image: "assets/gm/fischer.jpg" },
+            { author: "GM Viswanathan Anand", quote: "Confidence comes from hours and days and weeks and years of constant work and dedication.", image: "assets/gm/anand.jpg" },
+            { author: "GM Judit Polgár", quote: "Chess is not about memorizing moves. It's about understanding ideas.", image: "assets/gm/polgar.jpg" }
         ];
 
         const randomIntro = gmIntros[Math.floor(Math.random() * gmIntros.length)];
