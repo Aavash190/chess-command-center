@@ -15,14 +15,24 @@ class UniversalLab {
     }
 
     setupBoard() {
+        if (typeof Chessboard === 'undefined') {
+            console.error("UniversalLab: Chessboard is not defined. Retrying in 1s...");
+            setTimeout(() => this.setupBoard(), 1000);
+            return;
+        }
         const config = {
             draggable: true,
             position: 'start',
             onDrop: (source, target) => this.onMove(source, target),
-            onSnapEnd: () => this.board.position(this.game.fen())
+            onSnapEnd: () => this.board.position(this.game.fen()),
+            pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
         };
         this.board = Chessboard('lab-board', config);
-        window.addEventListener('resize', () => this.board.resize());
+        // Ensure board fills container correctly on start and resize
+        setTimeout(() => { if(this.board) this.board.resize(); }, 100);
+        window.addEventListener('resize', () => {
+            if (this.board) this.board.resize();
+        });
     }
 
     setupFileUpload() {
@@ -43,26 +53,49 @@ class UniversalLab {
     }
 
     loadPgn(pgn) {
-        this.trainingPgn = pgn;
+        if (!pgn) return;
+        this.trainingPgn = this.sanitize(pgn);
         this.resetTraining();
+    }
+
+    sanitize(pgn) {
+        // Strip technical debris and Z0 blockers (standard in some chessable/exported PGNs)
+        let s = pgn.replace(/\\\[\\\]/g, '');
+        s = s.replace(/\s+Z0\s+/g, ' ');
+        s = s.replace(/\bZ0\b/g, '');
+        
+        // Ensure Setup tag for FENs
+        if (s.includes('[FEN ') && !s.includes('[SetUp ')) {
+            s = s.replace(/\[FEN/, '[SetUp "1"]\n[FEN');
+        }
+        return s.trim();
     }
 
     resetTraining() {
         this.game.reset();
         this.board.position('start');
+        this.currentIndex = 0;
+        this.currentLine = [];
+
+        if (!this.trainingPgn) return;
         
         const tempGame = new Chess();
         if (tempGame.load_pgn(this.trainingPgn)) {
             const history = tempGame.history({ verbose: true });
             this.currentLine = history;
-            this.currentIndex = 0;
             
-            // If black to move, make first move
-            if (this.currentLine[0] && this.currentLine[0].color === 'w') {
-                // Wait for player
-            } else {
-                 // Should not happen in standard training PGNs but handled
-            }
+            // Auto-flip board if black is the main player in the PGN
+            const blackTag = (this.trainingPgn.match(/\[Black\s+"([^"]+)"\]/) || ['', ''])[1].toLowerCase();
+            this.board.orientation(blackTag.includes('user') || blackTag.includes('student') ? 'black' : 'white');
+            
+            // If it's black to move, or computer should move first
+            const sideToMove = tempGame.turn(); // 'w' or 'b'
+            // If the PGN starts with a FEN that is black's turn or if it's a standard game
+            // For now, let's just trigger first move if current side isn't the one we expect
+            // Simple heuristic: If first move is white, wait for user. 
+            // If board is black, maybe computer makes move.
+        } else {
+            console.error("Lab: Could not load sanitized PGN");
         }
     }
 
@@ -100,6 +133,63 @@ class UniversalLab {
                 if (window.fireSmallConfetti) window.fireSmallConfetti();
             }
         }
+    }
+
+    analyzePosition() {
+        if (typeof Stockfish === 'undefined') {
+            window.showToast("AI Engine not ready. Check connection.", "error");
+            return;
+        }
+
+        const btn = document.getElementById('ai-analyze-btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = "<span>⚙️ Computing...</span>";
+        btn.disabled = true;
+
+        if (!this.engine) {
+            try {
+                // Try initializing as a Worker if possible
+                this.engine = new Worker('https://cdn.jsdelivr.net/npm/stockfish@16.1.0/src/stockfish.js');
+            } catch (e) {
+                console.warn("UniversalLab: Worker initialization failed, attempting fallback.", e);
+                // Fallback to global Stockfish if available
+                if (typeof Stockfish === 'function') {
+                    this.engine = Stockfish();
+                } else {
+                    window.showToast("Neural Engine failed to initialize.", "error");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    return;
+                }
+            }
+            
+            // Standard UCI message handling
+            const onMsg = (event) => {
+                const msg = typeof event === 'string' ? event : event.data;
+                if (msg.startsWith('bestmove')) {
+                    const bestMove = msg.split(' ')[1];
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    
+                    if (window.commandAI) {
+                        window.commandAI.addMessage(`LAB ANALYSIS: Stockfish 16.1 suggests **${bestMove}** as the strongest continuation in this position.`, 'bot');
+                        if (!window.commandAI.isOpen) window.commandAI.toggle();
+                    } else {
+                        window.showToast(`Best Move: ${bestMove}`, "info");
+                    }
+                }
+            };
+
+            if (this.engine.onmessage !== undefined) {
+                this.engine.onmessage = onMsg;
+            } else if (typeof this.engine.addMessageListener === 'function') {
+                this.engine.addMessageListener(onMsg);
+            }
+        }
+
+        this.engine.postMessage('uci');
+        this.engine.postMessage(`position fen ${this.game.fen()}`);
+        this.engine.postMessage('go depth 15');
     }
 }
 

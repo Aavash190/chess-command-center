@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACADEMY MASTERCLASS | Chess Command Center</title>
+    <!-- REDIRECT FALLBACK FOR GENERATED HTML TRAINERS -->
+    <script src="data.js?v=4"></script>
+    <script>
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const mIdx = parseInt(params.get('month')) - 1;
+            const cIdx = parseInt(params.get('course'));
+            if (!isNaN(mIdx) && !isNaN(cIdx) && window.chessCurriculum && window.chessCurriculum[mIdx]) {
+                const course = window.chessCurriculum[mIdx].courses[cIdx];
+                if (course && course.htmlPath) {
+                    window.location.replace(course.htmlPath);
+                }
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="ai-styles.css?v=3">
+    <!-- Chessboard.js -->
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    <style>
+        body {
+            overflow-x: hidden;
+            background: #010409;
+        }
+
+        .academy-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .academy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+        }
+
+        .back-to-hq {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .back-to-hq:hover {
+            color: var(--theme-accent);
+            transform: translateX(-5px);
+        }
+
+        .academy-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+        }
+
+        .main-stage {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .video-vault {
+            position: relative;
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            aspect-ratio: 16 / 9;
+        }
+
+        .video-vault video {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .trainer-stage {
+            display: grid;
+            grid-template-columns: 500px 1fr;
+            gap: 30px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+        }
+
+        .board-wrapper {
+            width: 500px;
+        }
+
+        .board-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: var(--theme-accent);
+            color: #000;
+        }
+
+        .quiz-intel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .intel-card {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .intel-label {
+            font-size: 0.6rem;
+            color: var(--text-dim);
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .intel-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .feedback-box {
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .feedback-box.correct {
+            background: rgba(35, 134, 54, 0.1);
+            border-color: var(--accent);
+            color: #2ea043;
+        }
+
+        .feedback-box.wrong {
+            background: rgba(248, 81, 73, 0.1);
+            border-color: #f85149;
+            color: #f85149;
+        }
+
+        .variation-sidebar {
+            background: rgba(255,255,255,0.01);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .variation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .variation-item {
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .variation-item:hover {
+            border-color: var(--theme-accent);
+            background: rgba(255,255,255,0.05);
+            transform: translateX(5px);
+        }
+
+        .variation-item.active {
+            border-color: var(--theme-accent);
+            background: rgba(35, 134, 54, 0.1);
+        }
+
+        .variation-idx {
+            font-weight: 800;
+            color: var(--theme-accent);
+            font-size: 0.7rem;
+        }
+
+        /* --- Move Log --- */
+        .move-log {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            min-height: 100px;
+            align-content: flex-start;
+        }
+
+        .log-move {
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #fff;
+        }
+
+        .log-move.correct { color: #2ea043; border-bottom: 2px solid #2ea043; }
+        .log-move.wrong { color: #f85149; border-bottom: 2px solid #f85149; }
+
+        /* Text-only theory slide items */
+        .variation-item.text-slide {
+            opacity: 0.65;
+            font-style: italic;
+        }
+        .variation-item.text-slide:hover {
+            opacity: 1;
+        }
+        .variation-item.text-slide .variation-idx {
+            color: var(--text-dim);
+        }
+
+        /* Perspective selector */
+        #perspective-select option {
+            background: #1a1f2e;
+        }
+
+        @media (max-width: 1200px) {
+            .academy-grid { grid-template-columns: 1fr; }
+            .trainer-stage { grid-template-columns: 1fr; justify-items: center; }
+            .board-wrapper { width: 100%; max-width: 500px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="academy-container">
+        <header class="academy-header">
+            <a href="index.html" class="back-to-hq">
+                <span>←</span> BACK TO COMMAND CENTER
+            </a>
+            <div style="text-align: right;">
+                <h2 id="academy-course-title" class="shimmer-text" style="font-size: 1.4rem; font-family: 'Outfit'; letter-spacing: 2px; text-transform: uppercase;">Initializing Protocol...</h2>
+                <p id="academy-course-coach" style="font-size: 0.7rem; color: var(--text-dim); font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">Awaiting Intel</p>
+            </div>
+        </header>
+
+        <div class="academy-grid">
+            <main class="main-stage">
+                <!-- Video Vault -->
+                <div class="video-vault" id="video-container" style="display: none;">
+                    <video id="academy-video" controls>
+                        <source src="" type="video/mp4">
+                    </video>
+                </div>
+
+                <!-- Trainer Stage -->
+                <div class="trainer-stage">
+                    <div class="board-wrapper">
+                        <div id="chessboard"></div>
+                        <div class="board-controls">
+                            <button class="control-btn" id="prev-btn">PREV</button>
+                            <button class="control-btn" id="flip-btn">FLIP</button>
+                            <button class="control-btn" id="next-btn">SKIP</button>
+                        </div>
+                    </div>
+
+                    <div class="quiz-intel">
+                        <div class="feedback-box" id="feedback-box">
+                            Detecting move pattern...
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="intel-card">
+                                <div class="intel-label">Session Accuracy</div>
+                                <div class="intel-value" id="score-display">0 / 0</div>
+                            </div>
+                            <div class="intel-card">
+                                <div class="intel-label">Position Index</div>
+                                <div class="intel-value" id="pos-display">1 / ?</div>
+                            </div>
+                        </div>
+
+                        <div class="intel-card">
+                            <div class="intel-label">Active Variation</div>
+                            <div class="intel-value" id="active-var-name" style="font-size: 0.9rem; color: var(--theme-accent);">Loading...</div>
+                        </div>
+
+                        <div class="intel-card">
+                            <div class="intel-label">Mission Move Log</div>
+                            <div class="move-log" id="move-log">
+                                <!-- Moves inject here -->
+                            </div>
+                        </div>
+
+                        <button class="control-btn" id="hint-btn" style="width: 100%; background: rgba(0, 242, 255, 0.05); color: var(--cyan); border-color: rgba(0, 242, 255, 0.2);">
+                            💡 REQUEST TACTICAL HINT
+                        </button>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="variation-sidebar">
+                <div class="intel-card" style="margin-bottom: 20px; padding: 15px;">
+                    <div class="intel-label" style="margin-bottom: 10px;">TRAINING PERSPECTIVE</div>
+                    <select id="perspective-select" class="cc-select" style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff; padding: 8px; border-radius: 8px; font-family: 'Outfit'; cursor: pointer; outline: none;">
+                        <option value="auto">AUTO (FROM PGN)</option>
+                        <option value="white">ALWAYS WHITE</option>
+                        <option value="black">ALWAYS BLACK</option>
+                    </select>
+                </div>
+
+                <h3 class="intel-label">Available Variations</h3>
+                <div class="variation-list" id="variation-list">
+                    <!-- Variations inject here -->
+                </div>
+                
+                <div class="intel-card" style="margin-top: auto;">
+                    <h3 class="intel-label">Mission Progress</h3>
+                    <div id="mission-progress-bar" style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-top: 10px;">
+                        <div id="mission-progress-fill" style="width: 0%; height: 100%; background: var(--theme-accent); transition: width 0.5s ease;"></div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Command AI Assistant -->
+    <div id="command-ai-fab" class="ai-fab" onclick="window.commandAI.toggle()">
+        <div class="ai-fab-glow"></div>
+        <span class="ai-fab-icon">✦</span>
+    </div>
+
+    <div id="command-ai-sidebar" class="ai-sidebar">
+        <div class="ai-sidebar-header">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="ai-status-dot"></div>
+                <h3 style="font-family:'Outfit'; letter-spacing:1px; color:#fff; margin:0;">COMMAND AI</h3>
+            </div>
+            <button onclick="window.commandAI.toggle()" style="background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:1.2rem;">✕</button>
+        </div>
+        <div id="ai-chat-history" class="ai-chat-body"></div>
+        <div class="ai-sidebar-footer">
+            <input type="text" id="ai-input" placeholder="Ask for analysis or advice..." onkeypress="if(event.key==='Enter') window.commandAI.sendMessage()">
+            <button onclick="window.commandAI.sendMessage()">🚀</button>
+        </div>
+    </div>
+
+    <!-- PGN Tools -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/chess.js@0.11.0/chess.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- App Logic -->
+    <script src="data.js?v=4"></script>
+    <script src="positivity.js?v=4"></script>
+    <script src="sr-engine.js?v=4"></script>
+    <script src="command-ai.js?v=4"></script>
+    <script src="trainer.js?v=4"></script>
+</body>
+</html>

@@ -2,14 +2,24 @@
 
 class CommandCenter {
     constructor() {
-        this.currentMonth = this.calculateJourneyMonth() || parseInt(localStorage.getItem('chess_current_month')) || 1;
-        this.completedTasks = JSON.parse(localStorage.getItem('chess_tasks')) || {};
-        this.xp = parseInt(localStorage.getItem('chess_xp')) || 0;
+        try {
+            this.unlockedMonth = parseInt(localStorage.getItem('chess_unlocked_month')) || 1;
+            this.currentMonth = parseInt(localStorage.getItem('chess_current_month')) || this.unlockedMonth;
+            this.completedTasks = JSON.parse(localStorage.getItem('chess_tasks') || '{}');
+            this.xp = parseInt(localStorage.getItem('chess_xp') || '0');
+        } catch (e) {
+            console.warn("CommandCenter: LocalStorage access blocked. Using defaults.", e);
+            this.unlockedMonth = 1;
+            this.currentMonth = 1;
+            this.completedTasks = {};
+            this.xp = 0;
+        }
         this.rank = this.calculateRank();
         
         this.navContainer = document.getElementById('month-nav');
         this.taskList = document.getElementById('task-list');
-        this.rewardOverlay = document.getElementById('reward-overlay');
+        this.briefingOverlay = document.getElementById('mission-briefing-overlay');
+        this.gateOverlay = document.getElementById('golden-gate-overlay');
         this.examContainer = document.getElementById('exam-trigger-container');
         this.startExamBtn = document.getElementById('start-exam-btn');
         this.statusBar = {
@@ -27,73 +37,167 @@ class CommandCenter {
         this.init();
     }
 
-    calculateJourneyMonth() {
-        const journeyStartStr = localStorage.getItem('chess_journey_start');
-        if (!journeyStartStr) return null;
-        
-        const startDate = new Date(journeyStartStr);
-        const now = new Date();
-        const diffTime = Math.abs(now - startDate);
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        
-        const month = Math.floor(diffDays / 30) + 1;
-        return Math.min(12, month);
-    }
-
     init() {
-        this.setupIntroScreen();
-        this.renderNav();
+        this.currentMode = 'DASHBOARD';
+        document.body.className = 'mode-dashboard';
+        
         this.renderDashboard();
         this.setupEventListeners();
         this.setupViewSwitching();
         this.setupRankPopup();
     }
 
-    setupIntroScreen() {
-        // ... (Quotes as before)
-        const gmIntros = [
-            { author: "GM Garry Kasparov", quote: "Hard work is a talent. The ability to keep pushing yourself when everyone else has quit is a talent.", image: "assets/gm/kasparov.jpg" },
-            { author: "GM Magnus Carlsen", quote: "Without the element of enjoyment, it is not worth trying to excel at anything.", image: "assets/gm/carlsen.jpg" },
-            { author: "GM Bobby Fischer", quote: "You have to have the fighting spirit. You have to force moves and take chances.", image: "assets/gm/fischer.jpg" },
-            { author: "GM Viswanathan Anand", quote: "Confidence comes from hours and days and weeks and years of constant work and dedication.", image: "assets/gm/anand.jpg" },
-            { author: "GM Judit Polgár", quote: "Chess is not about memorizing moves. It's about understanding ideas.", image: "assets/gm/polgar.jpg" }
-        ];
-
-        const randomIntro = gmIntros[Math.floor(Math.random() * gmIntros.length)];
-        const introOverlay = document.getElementById('intro-overlay');
-        const appElement = document.getElementById('app');
+    switchMode(mode) {
+        this.currentMode = mode;
+        document.body.className = `mode-${mode.toLowerCase()}`;
         
-        if (introOverlay) {
-            document.getElementById('intro-gm-img').src = randomIntro.image;
-            document.getElementById('intro-quote').innerText = `"${randomIntro.quote}"`;
-            document.getElementById('intro-author').innerText = `— ${randomIntro.author}`;
+        // Backup visibility management
+        const intro = document.getElementById('intro-overlay');
+        const onboard = document.getElementById('onboarding-overlay');
+        const app = document.getElementById('app');
+
+        if (mode === 'LANDING') {
+            if (intro) intro.style.display = 'flex';
+            if (onboard) onboard.style.display = 'none';
+            if (app) app.style.display = 'none';
+        } else if (mode === 'ONBOARDING') {
+            if (intro) intro.style.display = 'none';
+            if (onboard) onboard.style.display = 'flex';
+            if (app) app.style.display = 'none';
+        } else {
+            if (intro) intro.style.display = 'none';
+            if (onboard) onboard.style.display = 'none';
+            if (app) app.style.display = 'block';
+        }
+
+        if (mode === 'ACADEMY') {
+             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    setupIntroScreen() {
+        const gateBtn = document.getElementById('enter-cmd-gate');
+        if (!gateBtn) return;
+
+        gateBtn.onclick = (e) => {
+            e.preventDefault();
             
-            document.getElementById('enter-cmd-btn').onclick = () => {
-                introOverlay.style.opacity = '0';
-                setTimeout(() => {
-                    introOverlay.style.display = 'none';
-                    localStorage.setItem('chess_journey_start', localStorage.getItem('chess_journey_start') || new Date().toISOString());
-                    appElement.style.display = 'block';
-                    this.updateJourneyTracker();
-                }, 500);
+            // Immediate visual transition for responsiveness
+            const intro = document.getElementById('intro-overlay');
+            if (intro) {
+                intro.style.opacity = '0';
+                setTimeout(() => { intro.style.display = 'none'; }, 500);
+            }
+
+            // Force onboarding if first time
+            if (!localStorage.getItem('chess_journey_start')) {
+                this.switchMode('ONBOARDING');
+                this.renderOnboarding();
+            } else {
+                this.switchMode('DASHBOARD');
+                this.renderDashboard();
+            }
+        };
+
+        const initiateBtn = document.getElementById('initiate-journey-btn');
+        if (initiateBtn) {
+            initiateBtn.onclick = () => {
+                localStorage.setItem('chess_journey_start', new Date().toISOString());
+                localStorage.setItem('chess_unlocked_month', '1');
+                this.unlockedMonth = 1;
+                this.switchMode('DASHBOARD');
+                this.renderDashboard();
             };
         }
     }
 
+    renderOnboarding() {
+        const roadmap = document.getElementById('onboarding-roadmap');
+        if (!roadmap) return;
+        
+        roadmap.innerHTML = window.chessCurriculum.map((m, i) => {
+            const firstCourse = m.courses && m.courses[0] ? m.courses[0] : null;
+            const poster = (firstCourse && firstCourse.poster) ? firstCourse.poster : 'https://www.chessable.com/img/book-default-small.png';
+            
+            return `
+                <div class="onboarding-card success-glint" onclick="window.cmdCenter.openBriefing(${i})">
+                     <img src="${poster}" alt="Month ${i+1}">
+                     <div class="onboarding-card-content">
+                        <div class="onboarding-meta-month">PHASE ${i+1}</div>
+                        <div class="onboarding-meta-title">${m.dailyFocus}</div>
+                        <div class="onboarding-meta-desc">Click for Mission Intelligence</div>
+                     </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    openBriefing(index) {
+        const m = window.chessCurriculum[index];
+        const content = document.getElementById('briefing-content');
+        if (!content) return;
+
+        const coursesHtml = m.courses.map(c => `
+            <div style="margin-bottom: 20px; border-left: 2px solid var(--accent); padding-left: 15px;">
+                <h4 style="color: #fff; margin-bottom: 5px;">${c.title}</h4>
+                <p style="font-size: 0.85rem; color: var(--text-dim);">${c.job}</p>
+                <div style="font-size: 0.75rem; color: var(--cyan); margin-top: 5px;">
+                    COACH: ${c.coach} • LEVEL: ${c.level} • ${c.superpower}
+                </div>
+            </div>
+        `).join('');
+
+        content.innerHTML = `
+            <div style="text-align:center; margin-bottom: 30px;">
+                <div style="font-size: 3rem; margin-bottom: 15px;">📁</div>
+                <h2 class="shimmer-text" style="font-family: 'Outfit'; font-size: 2.2rem; margin-bottom: 5px; font-weight: 800; letter-spacing: 2px;">MISSION INTELLIGENCE: PHASE ${index+1}</h2>
+                <p style="color: var(--accent); font-weight: 800; letter-spacing: 4px; font-size: 0.8rem; text-transform: uppercase;">Classified Mastery Protocol</p>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                <p style="color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; display:flex; align-items:center; gap:10px;">
+                    <span style="color:var(--accent);">🎯</span> Objective: ${m.dailyFocus}
+                </p>
+                <div style="display: grid; gap: 15px;">${coursesHtml}</div>
+            </div>
+
+            <div style="text-align:center; padding: 20px; border: 1px dashed var(--accent); border-radius: 12px;">
+                <p style="color: var(--text-dim); font-size: 0.9rem; font-style: italic;">"${m.reward}"</p>
+            </div>
+        `;
+
+        this.briefingOverlay.style.display = 'flex';
+        
+        document.getElementById('confirm-mission-btn').onclick = () => {
+             this.briefingOverlay.style.display = 'none';
+             if (index === 0) {
+                 localStorage.setItem('chess_journey_start', new Date().toISOString());
+                 this.switchMode('DASHBOARD');
+                 this.renderDashboard();
+             }
+        };
+    }
+
+    closeBriefing() {
+        this.briefingOverlay.style.display = 'none';
+    }
+
     renderNav() {
+        if (!this.navContainer) return;
+        this.navContainer.style.display = 'flex';
         this.navContainer.innerHTML = '';
-        // Subtle month dots/pills instead of big buttons
+        
         for (let i = 1; i <= 12; i++) {
             const btn = document.createElement('div');
-            btn.className = `month-btn ${this.currentMonth === i ? 'active' : ''}`;
-            btn.title = `Month ${i}`;
-            btn.innerHTML = i;
+            const isUnlocked = i <= this.unlockedMonth;
+            const isActive = this.currentMonth === i;
+
+            btn.className = `month-btn ${isActive ? 'active' : ''} ${isUnlocked ? 'unlocked' : 'locked'}`;
+            btn.title = isUnlocked ? `Phase ${i}` : `Locked (Complete Phase ${i-1} to unlock)`;
+            btn.innerHTML = isUnlocked ? i : '<span style="font-size:1rem; color:rgba(255,255,255,0.4);">🔒</span>';
             
-            // Allow navigating to all months for browsing
-            btn.onclick = () => this.switchMonth(i);
-            if (i > this.currentMonth) {
-                btn.style.opacity = '0.6';
-                btn.title = `Month ${i} (Future Phase)`;
+            if (isUnlocked) {
+                btn.onclick = () => this.switchMonth(i);
             }
             this.navContainer.appendChild(btn);
         }
@@ -101,13 +205,19 @@ class CommandCenter {
 
     renderDashboard() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        const data = chessCurriculum[this.currentMonth - 1];
+        if (!window.chessCurriculum) {
+            console.error("CommandCenter: Curriculum data missing!");
+            return;
+        }
+        const data = window.chessCurriculum[this.currentMonth - 1];
 
         // Apply Month Theme
         this.applyTheme(data.theme);
         
         // Update Status Bar
-        if (this.statusBar.focus) this.statusBar.focus.innerText = data.dailyFocus || "GENERAL STUDY";
+        if (this.statusBar.focus) {
+            this.statusBar.focus.innerHTML = `${data.dailyFocus} <span class="phase-tag">PHASE ${this.currentMonth}</span>`;
+        }
         this.updateRankDisplay();
         this.updateXPDisplay();
 
@@ -116,6 +226,7 @@ class CommandCenter {
         }
 
         this.renderTasks(data.tasks);
+        this.renderNav();
         this.updateProgress();
         this.updateJourneyTracker();
         this.checkExamAvailability();
@@ -158,16 +269,25 @@ class CommandCenter {
     
     updateJourneyTracker() {
         const journeyStartStr = localStorage.getItem('chess_journey_start');
-        const widget = document.getElementById('journey-tracker-widget');
-        if (!journeyStartStr || !widget) return;
+        if (!journeyStartStr) return;
         
-        widget.style.display = 'block';
         const startDate = new Date(journeyStartStr);
         const now = new Date();
         const diffDays = Math.floor(Math.abs(now - startDate) / (1000 * 60 * 60 * 24)) + 1;
         
-        document.getElementById('journey-days-elapsed').innerText = `Day ${diffDays}: Mission Focus`;
-        document.getElementById('journey-start-date').innerText = `Elite Status: Month ${this.currentMonth}`;
+        // Update Header
+        const headerDays = document.getElementById('journey-days-elapsed');
+        const headerStart = document.getElementById('journey-start-date');
+        if (headerDays) headerDays.innerText = `Day ${diffDays} of 365`;
+        if (headerStart) headerStart.innerText = `Initiated: ${startDate.toLocaleDateString()} • IM Performance Tracking`;
+
+        // Update Widget
+        const widgetContainer = document.getElementById('journey-tracker-widget');
+        const widgetDays = document.getElementById('journey-days-elapsed-widget');
+        const widgetStart = document.getElementById('journey-start-date-widget');
+        if (widgetContainer) widgetContainer.style.display = 'block';
+        if (widgetDays) widgetDays.innerText = `Day ${diffDays}`;
+        if (widgetStart) widgetStart.innerText = `Started: ${startDate.toLocaleDateString()}`;
     }
 
     renderTasks(tasks) {
@@ -195,6 +315,13 @@ class CommandCenter {
         if (this.completedTasks[taskId] && !wasDone) {
             this.xp += 50;
             localStorage.setItem('chess_xp', this.xp);
+            
+            const xpText = document.getElementById('daily-xp-text');
+            if (xpText) {
+                xpText.classList.add('xp-gain');
+                setTimeout(() => xpText.classList.remove('xp-gain'), 600);
+            }
+
             this.showPositivityToast();
             this.fireSmallConfetti();
             this.triggerHUDPulse();
@@ -204,7 +331,7 @@ class CommandCenter {
     }
 
     updateProgress() {
-        const data = chessCurriculum[this.currentMonth - 1];
+        const data = window.chessCurriculum[this.currentMonth - 1];
         let done = 0;
         data.tasks.forEach((_, index) => {
             if (this.completedTasks[`m${this.currentMonth}t${index}`]) done++;
@@ -245,21 +372,26 @@ class CommandCenter {
     }
 
     showReward(data) {
-        document.getElementById('reward-title').innerText = "PHASE MASTERED";
-        document.getElementById('reward-desc').innerHTML = `
-            <div style="font-size: 1.4rem; color: var(--theme-accent); margin-bottom: 25px; font-weight: 800; font-family: 'Outfit';">
-                ${data.reward}
-            </div>
-            <p style="color: var(--text-main); line-height: 1.8; font-size: 1.1rem; margin-bottom: 20px;">
-                You have successfully completed the <b>${data.dailyFocus}</b> protocol.<br>
-                Strength Gain: <span style="color:var(--accent); font-weight:800;">+25 Elo Est.</span>
-            </p>
-            <p style="font-style: italic; color: var(--text-dim); border-top: 1px solid var(--glass-border); padding-top: 20px;">
-                "Your tactical vision has reached a new threshold. Proceed to the next objective."
-            </p>
-        `;
-        this.rewardOverlay.style.display = 'flex';
+        if (this.currentMonth >= 12) {
+             // Graduation case
+             this.fireMegaConfetti();
+             alert("CONGRATULATIONS ARCHITECT. YOU HAVE COMPLETED THE ROAD TO 2400.");
+             return;
+        }
+
+        const gateOverlay = this.gateOverlay;
+        if (!gateOverlay) return;
+
+        gateOverlay.style.display = 'flex';
         this.fireMegaConfetti();
+
+        document.getElementById('unlock-next-month-btn').onclick = () => {
+             gateOverlay.style.display = 'none';
+             this.unlockedMonth++;
+             localStorage.setItem('chess_unlocked_month', this.unlockedMonth);
+             this.switchMonth(this.unlockedMonth);
+             this.showPositivityToast();
+        };
     }
 
     fireSmallConfetti() {
@@ -291,24 +423,27 @@ class CommandCenter {
         const container = document.getElementById('toast-container');
         if (!container) return;
         const quote = window.positivityQuotes ? window.positivityQuotes[Math.floor(Math.random() * window.positivityQuotes.length)] : "Excellence is a habit.";
+        this.showToast(quote, "success", "Task Secure");
+    }
+
+    showToast(message, type = "info", title = "System Notification") {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
         const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.innerHTML = `<div style="color:var(--accent); font-weight:700; font-size:0.8rem; text-transform:uppercase; margin-bottom:4px;">Task Secure</div><div style="font-size:0.95rem;">"${quote}"</div>`;
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `<div style="color:var(--theme-accent); font-weight:700; font-size:0.8rem; text-transform:uppercase; margin-bottom:4px;">${title}</div><div style="font-size:0.95rem;">${message}</div>`;
         container.appendChild(toast);
         setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(20px)'; setTimeout(() => toast.remove(), 300); }, 4000);
     }
 
     setupEventListeners() {
-        document.getElementById('close-reward').onclick = () => {
-            this.rewardOverlay.style.display = 'none';
-            if (this.currentMonth < 12) this.switchMonth(this.currentMonth + 1);
-        };
-
-        this.startExamBtn.onclick = () => {
-            if (typeof startMonthlyExam === 'function') {
-                startMonthlyExam(this.currentMonth);
-            }
-        };
+        if (this.startExamBtn) {
+            this.startExamBtn.onclick = () => {
+                if (typeof startMonthlyExam === 'function') {
+                    startMonthlyExam(this.currentMonth);
+                }
+            };
+        }
     }
 
     setupViewSwitching() {
@@ -353,4 +488,5 @@ class CommandCenter {
 
 document.addEventListener('DOMContentLoaded', () => {
     window.cmdCenter = new CommandCenter();
+    window.showToast = (msg, type, title) => window.cmdCenter.showToast(msg, type, title);
 });

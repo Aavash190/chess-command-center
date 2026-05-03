@@ -127,6 +127,10 @@ window.startMonthlyExam = async function(monthNum) {
         statusEl.innerHTML = `Position ${currentStep + 1} of ${selected.length} <br><small style="color:var(--text-dim); font-weight:400;">From: ${pos.course}</small>`;
         feedbackEl.innerHTML = "";
         
+        if (typeof Chessboard === 'undefined') {
+            feedbackEl.innerHTML = `<span style="color:#f85149;">Board Error: Refresh Required</span>`;
+            return;
+        }
         const game = new Chess(pos.fen);
         const turn = game.turn() === 'w' ? 'White' : 'Black';
         statusEl.innerHTML += `<div style="margin-top:10px; color:#fff;">${turn} to Move</div>`;

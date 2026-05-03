@@ -1,0 +1,329 @@
+--- 
+
++++ 
+
+@@ -10,2 +10,3 @@
+
+ let currentVar = null; // current variation's game object
++let currentChapter = null; // current chapter object
+ let moves = [];
+@@ -84,3 +85,3 @@
+
+   }
+-  return !!c.move(san, {sloppy: true});
++  return !!c.move(cleanSan(san), {sloppy: true});
+ }
+@@ -88,2 +89,5 @@
+
+ function getFenAtMove(idx) {
++  if (window._mainLineFens && window._mainLineFens[idx + 1]) {
++    return window._mainLineFens[idx + 1];
++  }
+   chess.load(initialFen);
+@@ -229,13 +233,9 @@
+
+ // - currentFen advances after each S node (position after last played move)
+-// - varBranchFen is the position BEFORE the last S node — this is what a V node
+ //   (sub-variation) needs, because V nodes are always alternatives to the
+ //   preceding S move, not continuations after it.
+-function renderNodes(nodes, beforeFen, afterFen, inVariation) {
++function renderNodes(nodes, beforeFen, afterFen, inVariation, baseHistory) {
++
+   if (!nodes || nodes.length === 0) return '';
+ 
+-  // Pre-process: merge V items whose first child is C containing @@StartBracket@@
+-  // into the previous V's val list.  These are bracket alternatives that belong
+-  // inside the preceding variation (e.g. 18.h4 / 18.b3 alternatives belong inside
+-  // the 17...Qc2! variation, not as independent top-level variations starting from
+-  // the main-line after-FEN where moves like Qxb2 would be illegal).
++  // Pre-process: merge V items
+   {
+@@ -266,4 +266,18 @@
+
+   let varBranchFen = beforeFen; // position before last S (for V nodes)
++  let currentHistory = baseHistory ? [...baseHistory] : [];
++  let varBranchHistory = [...currentHistory];
+   let isFirstS = true;
+   const fenHistory = [beforeFen]; // all FENs in this line for rewind logic
++
++  // Pre-calculate the full line for this level
++  const levelMoves = [];
++  for (const n of nodes) {
++    const k = n.key || n.k;
++    const v = n.val || n.v;
++    if (k === 'S') {
++      const s = cleanSan(v);
++      if (s !== '--' && s !== 'Z0') levelMoves.push(s);
++    }
++  }
++  const fullLinePgn = (baseHistory || []).concat(levelMoves).join(' ');
+ 
+@@ -277,10 +291,5 @@
+
+       varBranchFen = currentFen; // save position BEFORE this move
++      varBranchHistory = [...currentHistory];
+       const cleanVal = cleanSan(val);
+       if (cleanVal === '--') {
+-        // Null move: keep the same board position, flip only side-to-move.
+-        // The clicked-to FEN must be `nullFen` (board unchanged, side flipped),
+-        // NOT `currentFen` — using currentFen would jump back to the position
+-        // BEFORE the null move's "owner" played (e.g. clicking 7...-- after
+-        // 7.Qd2 would revert the board to before Qd2 instead of just passing
+-        // black's turn). This matches how real moves below use `nextFen`.
+         const parts = currentFen ? currentFen.split(' ') : null;
+@@ -295,3 +304,4 @@
+
+         }
+-        html += `<span class="var-move" data-fen="${escHtml(nullFen)}">${toFigurine(escHtml(val))}</span> `;
++        currentHistory.push('--');
++        html += `<span class="var-move" data-fen="${escHtml(nullFen)}" data-pgn="${escHtml(currentHistory.join(' '))}" data-full-pgn="${escHtml(fullLinePgn)}">${toFigurine(escHtml(val))}</span> `;
+         currentFen = nullFen;
+@@ -306,2 +316,3 @@
+
+           fenHistory.push(nextFen);
++          currentHistory.push(val);
+           const fromSq = moveResult.from || '';
+@@ -311,3 +322,3 @@
+
+           const annHtml = dispAnn ? `<span class="move-ann">${escHtml(dispAnn)}</span>` : '';
+-          html += `<span class="var-move" data-fen="${escHtml(nextFen)}" data-from="${fromSq}" data-to="${toSq}" data-capture="${isCapture}">${toFigurine(escHtml(dispMove))}${annHtml}</span> `;
++          html += `<span class="var-move" data-fen="${escHtml(nextFen)}" data-from="${fromSq}" data-to="${toSq}" data-capture="${isCapture}" data-pgn="${escHtml(currentHistory.join(' '))}" data-full-pgn="${escHtml(fullLinePgn)}">${toFigurine(escHtml(dispMove))}${annHtml}</span> `;
+         } else {
+@@ -321,8 +332,3 @@
+
+       const state = node.state || '';
+-      // Decide starting FEN: check first S node's turn vs currentFen's turn.
+-      // If the first S in the V has the same side-to-move as currentFen → it's
+-      // a continuation after the last S (use currentFen). Otherwise it's an
+-      // alternative to the last S (use varBranchFen = position before last S).
+       let varStartFen = varBranchFen;
+-      // 1) Check for embedded @@StartFEN@@ in a C child — most reliable
+       const fenC = (children || []).find(c => (c.key||c.k)==='C' && /@@StartFEN@@/.test(c.val||c.v||''));
+@@ -332,8 +338,2 @@
+
+       } else {
+-        // 2) Notation-based FEN selection:
+-        //    - White move: always has number + 1 dot  → sanIsBlack = false
+-        //    - Black move: number + 3 dots OR no number → sanIsBlack = true
+-        //    After white N  → valid next is black N (same number)
+-        //    After black N  → valid next is white N+1
+-        //    Use this to filter the candidate pool, then validate with chess.js.
+         const firstChildS = (children || []).find(c => (c.key||c.k)==='S');
+@@ -344,5 +344,3 @@
+
+           const sanMoveNum = numMatch ? parseInt(numMatch[1]) : null;
+-          const sanIsBlack = numMatch ? numMatch[2].length >= 3 : true; // unnumbered = always black
+-
+-          // Full candidate pool: named positions + full fenHistory
++          const sanIsBlack = numMatch ? numMatch[2].length >= 3 : true;
+           const seen = new Set();
+@@ -350,4 +348,2 @@
+
+             .filter(f => f && !seen.has(f) && seen.add(f));
+-
+-          // Filter by move number + color (notation rule)
+           const matched = allCandidates.filter(fen => {
+@@ -357,13 +353,4 @@
+
+             else
+-              return parts[1] === 'b'; // unnumbered = any black-to-move position
++              return parts[1] === 'b';
+           });
+-
+-          // Null-move-starting Vs: chess.js's move() can't validate "--"/"Z0",
+-          // so the standard validation loop below would always fail and
+-          // varStartFen would fall back to varBranchFen (= position BEFORE
+-          // the parent's main-line move). For a V like "7...-- 8.Ng5..."
+-          // after main move 7.Qd2, that wrongly puts the V's start one ply
+-          // too early — clicking 7...-- would revert the board to before Qd2
+-          // instead of just passing black's turn after Qd2. When the first
+-          // SAN is a null move, accept the first notation-matched candidate.
+           const isNullFirst = (firstSan === '--' || firstSan === 'Z0');
+@@ -377,3 +364,2 @@
+
+             }
+-            // Fallback: try remaining candidates without the notation filter
+             if (!found) {
+@@ -388,5 +374,5 @@
+
+       if (state === '' && !inVariation) {
+-        html += renderNodes(children, varStartFen, afterFen, false) + ' ';
++        html += renderNodes(children, varStartFen, afterFen, false, varBranchHistory) + ' ';
+       } else {
+-        html += `<span class="variation">( ${renderNodes(children, varStartFen, afterFen, true)} )</span> `;
++        html += `<span class="variation">( ${renderNodes(children, varStartFen, afterFen, true, varBranchHistory)} )</span> `;
+       }
+@@ -396,2 +382,60 @@
+
+ }
++
++function nodesToPgn(nodes) {
++  if (!nodes || nodes.length === 0) return '';
++  let pgn = '';
++  for (const n of nodes) {
++    const k = n.key || n.k;
++    const v = n.val || n.v;
++    if (k === 'S') {
++      const clean = cleanSan(v);
++      if (clean === '--' || clean === 'Z0') continue;
++      // Keep move numbers if they exist in the raw string, as Chessable uses them for context
++      pgn += v + ' ';
++    } else if (k === 'V') {
++      const sub = nodesToPgn(v);
++      if (sub.trim()) pgn += '(' + sub + ') ';
++    } else if (k === 'C') {
++      const comm = formatCommentText(v).replace(/<[^>]*>/g, '').replace(/[{}]/g, '');
++      pgn += '{' + comm + '} ';
++    }
++  }
++  return pgn.trim();
++}
++
++function movesToFullPgn(moveList) {
++  if (!moveList || moveList.length === 0) return '';
++  let pgn = '';
++  for (let i = 0; i < moveList.length; i++) {
++    const m = moveList[i];
++    if (m.before) {
++      const p = parseCommentJson(m.before);
++      if (p && p.data) pgn += nodesToPgn(p.data) + ' ';
++    }
++    
++    // Add move number for Lichess/standard PGN compatibility
++    if (m.col === 'w') {
++      pgn += m.move + '. ';
++    } else {
++      // For Black moves, add move number if it's the very first move or follows a variation
++      const prev = i > 0 ? moveList[i-1] : null;
++      const followsVar = pgn.trim().endsWith(')');
++      if (i === 0 || followsVar || (prev && prev.after && parseCommentJson(prev.after))) {
++        pgn += m.move + '... ';
++      }
++    }
++
++    const cleanM = cleanSan(m.san);
++    if (cleanM && cleanM !== '--' && cleanM !== 'Z0') {
++      pgn += cleanM + ' ';
++    }
++    
++    if (m.after) {
++      const p = parseCommentJson(m.after);
++      if (p && p.data) pgn += nodesToPgn(p.data) + ' ';
++    }
++  }
++  return pgn.trim();
++}
++
+ 
+@@ -591,3 +635,3 @@
+
+         const aFen = parsed.after || bFen;
+-        html += `<div class="comment-block">${renderNodes(parsed.data, bFen, aFen, false)}</div>`;
++        html += `<div class="comment-block">${renderNodes(parsed.data, bFen, aFen, false, moves.slice(0, i).map(m => m.san))}</div>`;
+       }
+@@ -618,3 +662,4 @@
+
+       const aFen = afterParsed.after || getFenAtMove(i);
+-      html += `<div class="comment-block">${renderNodes(afterParsed.data, bFen, aFen, false)}</div>`;
++      html += `<div class="comment-block">${renderNodes(afterParsed.data, bFen, aFen, false, moves.slice(0, i + 1).map(m => m.san))}</div>`;
++
+     } else if (commentStarted) {
+@@ -792,2 +837,3 @@
+
+       if (v.oid === oid) {
++        currentChapter = ch;
+         currentVar = v.game;
+@@ -1725,5 +1771,60 @@
+
+   function analyzeLichess() {
+-    const fen = cursor < 0 ? initialFen : getFenAtMove(cursor);
+-    window.open('https://lichess.org/analysis/' + fen.replace(/ /g, '_'), '_blank');
+-  }
++    let pgn = '';
++    
++    // Add standard PGN headers for better Lichess integration
++    const headers = [
++      ['Event', COURSE.name || 'Chess Training'],
++      ['Site', window.location.hostname],
++      ['Date', new Date().toISOString().split('T')[0].replace(/-/g, '.')],
++      ['Round', '?'],
++      ['White', currentChapter ? currentChapter.title : 'White'],
++      ['Black', currentVar ? (currentVar.title || 'Black') : 'Black'],
++      ['Result', '*']
++    ];
++
++    if (initialFen && initialFen !== 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1') {
++      headers.push(['FEN', initialFen]);
++      headers.push(['Variant', 'From Position']);
++      headers.push(['SetUp', '1']);
++    }
++
++    pgn = headers.map(h => `[${h[0]} "${h[1]}"]`).join('\n') + '\n\n';
++
++    // Export the entire variation tree for the current game
++    if (currentVar && currentVar.data) {
++      pgn += movesToFullPgn(currentVar.data);
++    } else {
++      // Fallback: just the current active line
++      pgn += movesToFullPgn(moves);
++    }
++
++    // Use fetch to intercept the redirect and append orientation
++    const newWindow = window.open('about:blank', '_blank');
++    if (!newWindow) {
++      alert("Please allow popups to open Lichess Analysis.");
++      return;
++    }
++
++    const formData = new URLSearchParams();
++    formData.append('pgn', pgn);
++
++    fetch('https://lichess.org/api/import', {
++      method: 'POST',
++      body: formData
++    })
++    .then(res => {
++      let finalUrl = res.url;
++      // If we are oriented as black, append /black to the lichess URL so it flips
++      if (orientation === 'black' && !finalUrl.endsWith('/black')) {
++        finalUrl += '/black';
++      }
++      newWindow.location.href = finalUrl;
++    })
++    .catch(err => {
++      console.error(err);
++      newWindow.close();
++      alert("Failed to export to Lichess. Check console.");
++    });
++  }
++
+   document.getElementById('btn-flip').addEventListener('click', flipBoard);
+@@ -1821,2 +1922,3 @@
+
+   const _settings = loadSettings();
++  _soundOn = _settings.soundOn !== undefined ? _settings.soundOn : true;
+   applyBoardTheme(_settings.boardTheme);
+@@ -1828,2 +1930,3 @@
+
+     _settings.boardTheme = 'chessmood';
++    _settings.soundOn = true;
+     saveSettings(_settings);
+@@ -1831,6 +1934,15 @@
+
+     document.getElementById('sel-board-theme').value = 'chessmood';
+-    document.getElementById('chk-sound').checked = true; _soundOn = true;
++    const chk = document.getElementById('chk-sound');
++    if (chk) chk.checked = true;
++    _soundOn = true;
+   });
+   const chkSound = document.getElementById('chk-sound');
+-  if (chkSound) chkSound.addEventListener('change', () => { _soundOn = chkSound.checked; });
++  if (chkSound) {
++    chkSound.checked = _soundOn;
++    chkSound.addEventListener('change', () => {
++      _soundOn = chkSound.checked;
++      _settings.soundOn = _soundOn;
++      saveSettings(_settings);
++    });
++  }
+   const settingsPanel = document.getElementById('settings-panel');

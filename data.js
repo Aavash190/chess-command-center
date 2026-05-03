@@ -1,4 +1,4 @@
-const positivityQuotes = [
+window.positivityQuotes = [
     "Consistency is the only requirement. Great work today!",
     "Every puzzle solved is a step closer to 2400.",
     "Small daily wins create massive long-term success.",
@@ -9,573 +9,422 @@ const positivityQuotes = [
     "The 2400 rating is earned in the quiet moments of study."
 ];
 
-const chessCurriculum = [
-    // ─── MONTH 1: TACTICAL FOUNDATION ───────────────────────────────────────────
+window.chessCurriculum = [
     {
         month: 1,
-        theme: "tiger",
-        dailyFocus: "Tactical Patterns",
+        theme: "Foundation",
+        dailyFocus: "Defensive Awareness & Blunder Prevention",
         reward: "Unlocked: The Eye of the Tiger",
-        tasks: [
-            "Tactic Ninja '3 Questions' Application - 15m",
-            "Woodpecker sets (3D board) - 45m",
-            "Visualization: Square Color Recognition (Lichess) - 15m",
-            "Opening: Bird's Ch. 1-2 (Train with PGN) - 30m",
-            "Maintenance: Preventing Blunders (CLAMP Method) - 20m"
-        ],
+        tasks: ["CLAMP Defensive Checklist - 20m", "Tactic Ninja Warmup - 20m", "Identify Opponent Threats - 30m"],
         courses: [
             {
-                poster: "https://www.chessmood.com/storage/app/blog/chessmood-images/tactic-ninja-course.jpg",
-                title: "Tactic Ninja",
-                mission: "Installing the Combat Software",
-                job: "Master the '3 Questions' thinking technique to find tactics before the opponent does.",
-                coach: "GM Avetik Grigoryan",
-                superpower: "Tactical Pattern Recognition",
-                stats: "19h 26m Video / 383 Episodes",
-                benefits: "You will stop 'hoping' for tactics and start 'creating' them by understanding the underlying motifs.",
-                link: "https://www.chessmood.com/course/tactic-ninja",
-                courseDetails: {
-                    chapters: 10,
-                    length: "19 hours 26 mins Video",
-                    quality: "Elite / Game-Changing",
-                    accolades: "Community Favourite - Best Tactical Course 2024",
-                    modules: [
-                        { title: "Awareness Stage: Patterns", length: "120 mins" },
-                        { title: "Sharp Eye Stage: Recognition", length: "240 mins" },
-                        { title: "The 3 Questions System", length: "Core Skill" }
-                    ]
-                }
+                title: "Preventing Blunders in Chess",
+                job: "Build an iron-clad thought process using the CLAMP method (Checks, Loose Pieces, Alignments, Mobility, Passed Pawns) to eliminate game-losing mistakes.",
+                coach: "CM Dr. Can Kabadayi",
+                level: "Beginner/Intermediate (1000-1600)",
+                superpower: "Blunder Immunity",
+                link: "https://www.chessable.com/preventing-blunders-in-chess/course/258968/",
+                pgnPath: "Course Database/Month 1/Preventing Blunders in Chess - CM Can Kabadayi/Preventing Blunders in Chess.pgn",
+                htmlPath: "Course Database/Month 1/Preventing Blunders in Chess - CM Can Kabadayi/Preventing Blunders in Chess.html"
             },
             {
-                poster: "assets/posters/woodpecker_poster.jpg",
-                title: "The Woodpecker Method 1 - Tactical Play",
-                mission: "Building Speed & Volume",
-                job: "Drill 1,100+ puzzles repeatedly until tactical vision becomes automatic.",
-                coach: "GM Axel Smith & Hans Tikkanen",
-                superpower: "Blitz-Speed Accuracy",
-                stats: "1,128 Trainable Variations",
-                benefits: "Your brain will 'auto-complete' tactical patterns, saving you massive amounts of time on the clock.",
-                link: "https://www.chessable.com/the-woodpecker-method/course/10582/",
-                courseDetails: {
-                    chapters: 3,
-                    length: "1,128 Variations",
-                    quality: "Legendary / High Volume",
-                    accolades: "The 'Bible' of Pattern Recognition",
-                    modules: [
-                        { title: "Easy Puzzles (Warmup)", length: "222 Exercises" },
-                        { title: "Medium Puzzles (Core)", length: "762 Exercises" },
-                        { title: "Hard Puzzles (Mastery)", length: "144 Exercises" }
-                    ]
-                },
+                title: "Tactic Ninja",
+                job: "Internalize fundamental tactical motifs and master the '3 Question Method' to spot winning combinations instantly.",
+                coach: "GM Avetik Grigoryan",
+                level: "Beginner/Intermediate (1000-1600)",
+                superpower: "Tactical Vision",
+                link: "https://chessmood.com/course/tactic-ninja",
+                pgnPath: "Course Database/Month 1/Tactic Ninja/PGNs/Tactic Ninja.pgn",
+                htmlPath: "Course Database/Month 1/Tactic Ninja/PGNs/Tactic Ninja.html"
+            },
+            {
+                title: "My Opponent's Move",
+                job: "Shift your focus to prophylaxis—mastering the art of identifying hidden threats and misconceptions in your opponent's intentions.",
+                coach: "CM Dr. Can Kabadayi",
+                level: "Intermediate (1400-1800)",
+                superpower: "Strategic Vigilance",
+                link: "https://www.chessable.com/my-opponents-move-identifying-threats-mistakes-and-misconceptions/course/184518/",
+                pgnPath: "Course Database/Month 1/My Opponent's Move Identifying Threats, Mistakes and Misconception - CM Can Kabadayi/My_Opponent_s_Move_Identifying_Threats,_Mistakes_and_Misconcep.pgn",
+                htmlPath: "Course Database/Month 1/My Opponent's Move Identifying Threats, Mistakes and Misconception - CM Can Kabadayi/My_Opponent_s_Move_Identifying_Threats,_Mistakes_and_Misconcep.html"
+            }
+        ]
+    },
+    {
+        month: 2,
+        theme: "Strategy",
+        dailyFocus: "Strategic Principles & Flank Defense",
+        reward: "Unlocked: The Strategic Architect",
+        tasks: ["Positional Planning - 30m", "Flank Repertoire Study - 30m"],
+        courses: [
+            {
+                title: "Chess Strategy Simplified",
+                job: "Master core strategic pillars—center control, piece activity, and pawn structure—to form effective long-term plans.",
+                coach: "NM Robert Ramirez",
+                level: "Beginner/Intermediate (1200-1600)",
+                superpower: "Strategic Clarity",
+                link: "https://www.chessable.com/chess-strategy-simplified/course/244304/",
+                pgnPath: "Course Database/Month 2/Chess Strategy Simplified - NM Robert Ramirez/Chess Strategy Simplified.pgn",
+                htmlPath: "Course Database/Month 2/Chess Strategy Simplified - NM Robert Ramirez/Chess Strategy Simplified.html"
+            },
+            {
+                title: "Kushager's Killer Repertoire",
+                job: "A compact, modern repertoire for Black designed to neutralize the English, Reti, and common 1.d4 sidelines with ease.",
+                coach: "IM Kushager Krishnater",
+                level: "Intermediate/Advanced (1600-2000)",
+                superpower: "Opening Confidence",
+                link: "https://www.chessable.com/kushagers-killer-repertoire-for-black-against-1c4-1nf3-and-sidelines/course/259850/",
+                pgnPath: "Course Database/Month 2/Kushager's Repertoire Against 1.c4, 1.Nf3 and Sidelines/Kushager's Repertoire Against 1.c4, 1.Nf3 and Sidelines.pgn",
+                htmlPath: "Course Database/Month 2/Kushager's Repertoire Against 1.c4, 1.Nf3 and Sidelines/Kushager's Repertoire Against 1.c4, 1.Nf3 and Sidelines.html"
+            }
+        ]
+    },
+    {
+        month: 3,
+        theme: "Calculation",
+        dailyFocus: "Calculation Discipline & Piece Placement",
+        reward: "Unlocked: The Logic Engine",
+        tasks: ["Calculation Drills - 45m", "Piece Placement Study - 30m"],
+        courses: [
+            {
+                title: "Calculation: A Complete Guide",
+                job: "Develop a professional calculation technique using the 'Burger' candidate move selection and tree-building system.",
+                coach: "CM Azel Chua",
+                level: "Intermediate/Advanced (1600-2200)",
+                superpower: "Systematic Calculation",
+                link: "https://www.chessable.com/calculation-a-complete-guide-for-tournament-players/course/53691/",
+                pgnPath: "Course Database/Month 3/Calculation_A_Complete_Guide_for_Tournament_Players/Calculation_A_Complete_Guide_for_Tournament_Players.pgn",
+                htmlPath: "Course Database/Month 3/Calculation_A_Complete_Guide_for_Tournament_Players/Calculation_A_Complete_Guide_for_Tournament_Players.html"
+            },
+            {
+                title: "Fundamental Chess Calculation Skills",
+                job: "Bridge the gap between basic puzzles and complex lines. Focus on visualizing variations 2-4 moves deep with 100% accuracy.",
+                coach: "CM Dr. Can Kabadayi",
+                level: "Intermediate (1400-1800)",
+                superpower: "Iron Logic",
+                link: "https://www.chessable.com/fundamental-chess-calculation-skills/course/181822/",
+                pgnPath: "Course Database/Month 3/Fundamental Chess Calculation Skills/Fundamental Chess Calculation Skills - Can Kabadayi.pgn",
+                htmlPath: "Course Database/Month 3/Fundamental Chess Calculation Skills/Fundamental Chess Calculation Skills - Can Kabadayi.html"
+            },
+            {
+                title: "Perfect Your Piece Placement",
+                job: "Internalize the laws of piece coordination. Learn to position your army for maximum harmony and tactical pressure.",
+                coach: "GM Nikola Nestorovic",
+                level: "Intermediate/Advanced (1600-2100)",
+                superpower: "Total Coordination",
+                link: "https://www.chessable.com/perfect-your-piece-placement/course/123019/",
+                pgnPath: "Course Database/Month 3/Perfect Your Piece Placement - Nestorovic/Perfect Your Piece Placement.pgn",
+                htmlPath: "Course Database/Month 3/Perfect Your Piece Placement - Nestorovic/Perfect Your Piece Placement.html"
+            }
+        ]
+    },
+    {
+        month: 4,
+        theme: "Imbalances",
+        dailyFocus: "Positional Assessment & Piece Activation",
+        reward: "Unlocked: The Evaluation Expert",
+        tasks: ["Imbalance Assessment - 45m", "Pawn Sacrifice Drills - 45m"],
+        courses: [
+            {
+                title: "How to Reassess Your Chess",
+                job: "The definitive guide to imbalances. Learn to evaluate positions based on Silman's pillars: space, material, and structure.",
+                coach: "IM Jeremy Silman",
+                level: "Intermediate (1400-1900)",
+                superpower: "Evaluation Mastery",
+                link: "https://www.chessable.com/course/74830/",
+                pgnPath: "",
+                htmlPath: ""
+            },
+            {
+                title: "The Art of Awakening Pieces",
+                job: "Master dynamic piece activation. Learn when to sacrifice material or structure to breathe life into passive pieces.",
+                coach: "CM Dr. Can Kabadayi",
+                level: "Intermediate/Advanced (1600-2000)",
+                superpower: "Dynamic Piece Flow",
+                link: "https://www.chessable.com/the-art-of-awakening-pieces/course/103448/",
+                pgnPath: "Course Database/Month 4/The Art of Awakening Pieces -  CM Can Kabadayi/The Art of Awakening Pieces.pgn",
+                htmlPath: "Course Database/Month 4/The Art of Awakening Pieces -  CM Can Kabadayi/The Art of Awakening Pieces.html"
+            }
+        ]
+    },
+    {
+        month: 5,
+        theme: "The Art of Middle",
+        dailyFocus: "Middlegame Strategy & Piece Burial",
+        reward: "Unlocked: The Middlegame Magician",
+        tasks: ["Piece Burial Protocol - 45m", "Middlegame Masterclass - 60m"],
+        courses: [
+            {
+                title: "The Art of Burying Pieces",
+                job: "Turn the tables on piece activity. Master the restriction techniques needed to systematically immobilize and 'bury' enemy pieces.",
+                coach: "CM Dr. Can Kabadayi",
+                level: "Intermediate/Advanced (1600-2000)",
+                superpower: "Restriction Mastery",
+                link: "https://www.chessable.com/the-art-of-burying-pieces/course/87625/",
+                pgnPath: "Course Database/Month 5/The Art of Burying Pieces - CM Can Kabadayi/The Art of Burying Pieces by CM Can Kabadayi.pgn",
+                htmlPath: "Course Database/Month 5/The Art of Burying Pieces - CM Can Kabadayi/The Art of Burying Pieces by CM Can Kabadayi.html"
+            },
+            {
+                title: "The Art of Exchanging Pieces",
+                job: "Stop trading aimlessly. Learn the strategic 'trade logic' that differentiates Masters from Club players.",
+                coach: "CM Dr. Can Kabadayi",
+                level: "Intermediate/Advanced (1500-1900)",
+                superpower: "Trade Mastery",
+                link: "https://www.chessable.com/the-art-of-exchanging-pieces/course/82374/",
+                pgnPath: "Course Database/Month 5/The Art of Exchanging Pieces - CM Can Kabadayi/The Art of Exchanging Pieces by CM Can Kabadayi 2023-TLS.pgn",
+                htmlPath: "Course Database/Month 5/The Art of Exchanging Pieces - CM Can Kabadayi/The Art of Exchanging Pieces by CM Can Kabadayi 2023-TLS.html"
+            },
+            {
+                title: "Mastering the Middlegame",
+                job: "Advanced strategic masterclass focusing on dominant piece types, space advantages, and the positional exchange sacrifice.",
+                coach: "GM Varuzhan Akobian",
+                level: "Intermediate/Advanced (1600-2200)",
+                superpower: "Strategic Dominance",
+                link: "https://www.chessable.com/mastering-the-middlegame/course/13606/",
+                pgnPath: "",
+                htmlPath: "",
                 videos: [
-                    { title: "1. Introduction", path: "Course Database/Month 1/The Woodpecker Method 1 - Tactical Play/Videos/1. Introduction.mp4" },
-                    { title: "2. Summary Of Tactical Motifs", path: "Course Database/Month 1/The Woodpecker Method 1 - Tactical Play/Videos/2. Summary Of Tactical Motifs.mp4" },
-                    { title: "3. Instructions", path: "Course Database/Month 1/The Woodpecker Method 1 - Tactical Play/Videos/3. Instructions.mp4" },
-                    { title: "4. Easy Exercises", path: "Course Database/Month 1/The Woodpecker Method 1 - Tactical Play/Videos/4. Easy Exercises.mp4" },
-                    { title: "5. Intermediate Exercises I", path: "Course Database/Month 1/The Woodpecker Method 1 - Tactical Play/Videos/5.1. Intermediate Exercises I.mp4" },
-                    { title: "6. Intermediate Exercises II", path: "Course Database/Month 1/The Woodpecker Method 1 - Tactical Play/Videos/6.1 Intermediate Exercises II.mp4" },
-                    { title: "7. Intermediate Exercises III", path: "Course Database/Month 1/The Woodpecker Method 1 - Tactical Play/Videos/7. Intermediate Exercises III.mp4" },
-                    { title: "8. Advanced Exercises", path: "Course Database/Month 1/The Woodpecker Method 1 - Tactical Play/Videos/8. Advanced Exercises.mp4" }
+                    { title: "Dominant Bishop", path: "Course Database/Month 5/Mastering the Middlegame by GM Varuzhan Akobian/01 - Dominant Bishop.mp4" },
+                    { title: "Space Advantage", path: "Course Database/Month 5/Mastering the Middlegame by GM Varuzhan Akobian/02 - Space Advantage.mp4" },
+                    { title: "Powerful Knight", path: "Course Database/Month 5/Mastering the Middlegame by GM Varuzhan Akobian/03 - Powerful Knight.mp4" },
+                    { title: "Development and Initiative", path: "Course Database/Month 5/Mastering the Middlegame by GM Varuzhan Akobian/04 - Development and Initiative.mp4" },
+                    { title: "Two Weaknesses", path: "Course Database/Month 5/Mastering the Middlegame by GM Varuzhan Akobian/05 - Two Weaknesses.mp4" },
+                    { title: "Positional Exchange Sacrifice", path: "Course Database/Month 5/Mastering the Middlegame by GM Varuzhan Akobian/06 - Positional Exchange Sacrifice.mp4" }
                 ]
             },
             {
-                poster: "https://www.chessable.com/img/books/1758691732537243.png",
-                title: "Preventing Blunders",
-                mission: "The Safety Protocol",
-                job: "Install the CLAMP method to stop giving away pieces for free.",
-                coach: "CM Can Kabadayi",
-                superpower: "Blunder Immunity",
-                stats: "6h Video / Best Seller 2025",
-                benefits: "You will eliminate those 'heartbreak' moments where you throw away a winning game in one move.",
-                link: "https://www.chessable.com/preventing-blunders-the-clamp-method-to-stop-throwing-games/course/175869/",
-                courseDetails: {
-                    chapters: 5,
-                    length: "6 hours Video",
-                    quality: "Essential / Defensive",
-                    accolades: "S-Tier Error Correction Method",
-                    modules: [
-                        { title: "The CLAMP Method", length: "Foundational" },
-                        { title: "Awareness Drills", length: "Core" }
-                    ]
-                }
+                title: "Light & Dark Magic",
+                job: "Understand the strategy of color complexes. Learn how to exploit weaknesses and dominate a specific set of squares.",
+                coach: "GM Axel Smith",
+                level: "Advanced (1800-2300)",
+                superpower: "Chromatic Dominance",
+                link: "https://www.chessable.com/light-dark-magic-color-complexes-in-chess/course/101886/",
+                pgnPath: "Course Database/Month 5/Light & Dark Magic - Color Complexes in Chess/Light and Dark Magic -  Color Complexes in Chess.pgn",
+                htmlPath: "Course Database/Month 5/Light & Dark Magic - Color Complexes in Chess/Light and Dark Magic -  Color Complexes in Chess.html"
             }
         ]
     },
-
-    // ─── MONTH 2: ESSENTIAL ENDGAMES ─────────────────────────────────────────────
-    {
-        month: 2,
-        theme: "ice",
-        dailyFocus: "Endgame Mechanics",
-        reward: "Unlocked: The Endgame Executioner",
-        tasks: [
-            "Silman Study + Stockfish Drill - 90m",
-            "Intermediate Moves (Zwischenzug) Drill - 15m",
-            "Visualization: Square Color (Boardless test) - 15m",
-            "Tactics Maintenance: Lichess (1700-2000) - 40m",
-            "Opening: Bird's Ch. 3-6 (Train with PGN) - 20m"
-        ],
-        courses: [
-            {
-                poster: "https://www.chessable.com/img/books/877111700492773.png",
-                title: "Silman's Complete Endgame Course",
-                mission: "The Practical Foundation",
-                job: "Never lose a winning endgame or waste a drawn position ever again.",
-                coach: "IM Jeremy Silman",
-                superpower: "Practical Endgame Sense",
-                stats: "9h 54m Video / 191 Puzzles",
-                benefits: "You will feel a calm confidence as the pieces come off the board, knowing you are a better 'closer' than your opponent.",
-                link: "https://www.chessable.com/silmans-complete-endgame-course/course/87711/",
-                courseDetails: {
-                    chapters: 9,
-                    length: "9 hours 54 mins Video",
-                    modules: [
-                        { title: "Class D (1200-1399): Pawn Endings", length: "105 mins" },
-                        { title: "Class C (1400-1599): Opposition", length: "90 mins" },
-                        { title: "Class B (1600-1799): Rook Endgames", length: "140 mins" }
-                    ]
-                }
-            },
-        ]
-    },
-
-    // ─── MONTH 3: THE CALCULATION BRIDGE ─────────────────────────────────────────
-    {
-        month: 3,
-        theme: "electric",
-        dailyFocus: "Calculation Logic",
-        reward: "Unlocked: The Logic Engine",
-        tasks: [
-            "Calculation: Write candidates on paper - 100m",
-            "The Art of Defense (Hellsten Basics) - 20m",
-            "Visualization: File & Rank Vision (Rook sweeps) - 15m",
-            "Tactics Maintenance: Lichess (1800-2100) - 45m"
-        ],
-        courses: [
-            {
-                poster: "https://www.chessable.com/img/books/1233331732536291.png",
-                title: "Fundamental Chess Calculation Skills",
-                mission: "Installing the 3-Ply Foundation",
-                job: "Eliminate all 1-move blunders and spot opponent's threats before they happen.",
-                coach: "CM Can Kabadayi",
-                superpower: "Iron Logic",
-                stats: "8h 13m Video / 368 Exercises",
-                benefits: "You will develop a 'safety net' for your brain, catching tactical errors before you ever make them on the real board.",
-                link: "https://www.chessable.com/fundamental-chess-calculation-skills/course/123333/",
-                courseDetails: {
-                    chapters: 8,
-                    length: "8 hours 13 mins Video",
-                    quality: "Elite / High Contrast",
-                    accolades: "Community standard for calculation clarity.",
-                    modules: [
-                        { title: "Level 1: Immediacy – One-movers", length: "108 Exercises" },
-                        { title: "Level 2: The Core Elements", length: "115 Exercises" },
-                        { title: "Level 4: Master Level Accuracy", length: "96 Exercises" }
-                    ]
-                }
-            }
-        ]
-    },
-
-    // ─── MONTH 4: STRATEGIC STRUCTURES ───────────────────────────────────────────
-    {
-        month: 4,
-        theme: "stone",
-        dailyFocus: "Structural Integrity",
-        reward: "Unlocked: The Architect",
-        tasks: [
-            "PHN / Flores Rios Video Structure Study - 90m",
-            "Tactics Maintenance - 45m",
-            "Structure Application (Guess the Move) - 30m"
-        ],
-        courses: [
-            {
-                poster: "https://www.chessable.com/img/books/145401721037544.png",
-                title: "Chess Structures: A Grandmaster Guide",
-                mission: "Decoding the Master's Blueprint",
-                job: "Look at any pawn structure on the board and immediately know the next 15 moves.",
-                coach: "GM Mauricio Flores Rios",
-                superpower: "Grandmaster Structural Intuition",
-                stats: "32h+ Video / 140 Model Games",
-                benefits: "You will never feel 'lost' in a middlegame again; the board will speak to you through the language of pawns.",
-                link: "https://www.chessable.com/chess-structures-a-grandmaster-guide/course/14540/",
-                courseDetails: {
-                    chapters: 28,
-                    length: "32 hours Video / 140 Games",
-                    quality: "Elite / Grandmaster Standard",
-                    accolades: "Widely considered the definitive work on pawn structures.",
-                    modules: [
-                        { title: "The Isolani (IQP)", length: "6 Model Games" },
-                        { title: "The Carlsbad Structure", length: "6 Model Games" },
-                        { title: "The Sicilian Formations", length: "12 Model Games" }
-                    ]
-                }
-            },
-        ]
-    },
-
-    // ─── MONTH 5: TACTICAL VOLUME II (WOODPECKER CYCLE 2) ────────────────────────
-    {
-        month: 5,
-        reward: "Unlocked: The Speed Demon",
-        tasks: [
-            "Speed Woodpecker Cycle 2 - 90m",
-            "Visualization: Diagonal Vision (Pathfinding) - 15m",
-            "Tactics: Theme-filtered (Pins/Forks) - 45m",
-            "Opening: Bird's sidelines (Train with PGN) - 30m"
-        ],
-        courses: [
-            {
-                poster: "https://www.chessable.com/img/books/105821721037544.png",
-                title: "The Woodpecker Method - Cycle 2",
-                mission: "Achieving Blitz-Like Processing",
-                job: "Solve the same 1,128 puzzles 30-40% faster than Month 1 — because mastery is speed.",
-                coach: "GM Axel Smith & Hans Tikkanen",
-                superpower: "The Blitz Mind",
-                stats: "High-Intensity Speed Repetition",
-                benefits: "You will achieve 'blitz-speed' processing, allowing you to dominate in time scrambles and see winning tactics in a flash.",
-                link: "https://www.chessable.com/the-woodpecker-method/course/10582/",
-                courseDetails: {
-                    chapters: 3,
-                    length: "1,128 Variations (Speed Focus)",
-                    modules: [
-                        { title: "Easy Set Regression Test", length: "4h Time Constraint" },
-                        { title: "Medium Set Optimization", length: "12h Time Constraint" }
-                    ]
-                }
-            }
-        ]
-    },
-
-    // ─── MONTH 6: STRATEGIC IMBALANCES ───────────────────────────────────────────
     {
         month: 6,
-        reward: "Unlocked: The Strategic Visionary",
-        tasks: [
-            "Silman Reassess (Video + Imbalances) - 90m",
-            "Woodpecker 2: Positional Flow - 30m",
-            "Visualization: Diagonal Vision (Mastery) - 15m",
-            "Opening: 1...e5 (Full Repertoire) - 30m"
-        ],
+        theme: "Endgame & Defense",
+        dailyFocus: "Theoretical Endgames & Flank Repertoire",
+        reward: "Unlocked: The Solid Wall",
+        tasks: ["Endgame Drill Session - 60m", "Stonewall Dutch Mastery - 45m"],
         courses: [
             {
-                poster: "https://www.chessable.com/img/books/877101668499264.png",
-                title: "How to Reassess Your Chess",
-                mission: "Engineering the Winning Advantage",
-                job: "Formulate grand strategies based on Silman's 7 positional imbalances.",
-                coach: "IM Jeremy Silman",
-                superpower: "The Architect's Vision",
-                stats: "23.5h Video / Classic Strategy",
-                benefits: "You will develop the ability to 'read' the board like a grandmaster, identifying exactly where to strike based on the subtle imbalances of the position.",
-                link: "https://www.chessable.com/how-to-reassess-your-chess/course/87710/",
-                courseDetails: {
-                    chapters: 15,
-                    length: "23.5 hours Video",
-                    quality: "Elite / Philosophical",
-                    accolades: "The All-Time Highest Rated Strategy Course on Chessable.",
-                    modules: [
-                        { title: "Minor Piece Imbalances", length: "Part I" },
-                        { title: "Space and Pawn Structure", length: "Part II" }
-                    ]
-                }
+                title: "100 Endgames You Must Know",
+                job: "Internalize the essential theoretical endgame positions—from the Lucena to the Vancura—that every Master must know.",
+                coach: "GM Jesús de la Villa",
+                level: "Intermediate/Advanced (1500-2100)",
+                superpower: "Endgame Precision",
+                link: "https://chessable.com/100-endgames-you-must-know/course/5194/",
+                pgnPath: "Course Database/Month 6/100 Endgames You Must Know (tiny)/100 Endgames You Must Know, John Bartholomew.pgn",
+                htmlPath: "Course Database/Month 6/100 Endgames You Must Know (tiny)/100 Endgames You Must Know, John Bartholomew.html"
             },
             {
-                poster: "https://www.chessable.com/img/books/1758691732537243.png",
-                title: "Chess Crime and Punishment",
-                mission: "Positional Awareness",
-                job: "Study tactical and positional crimes your opponents commit.",
-                coach: "CM Can Kabadayi",
-                superpower: "Strategic Vigilance",
-                stats: "Best Seller / Punisher Mindset",
-                benefits: "You will learn to relentlessly exploit your opponent's mistakes, whether tactical or positional, turning every 'crime' into a victory.",
-                link: "https://www.chessable.com/chess-crime-and-punishment-how-to-spot-and-exploit-positional-errors/course/175869/",
-                courseDetails: {
-                    chapters: 5,
-                    length: "6 hours Video",
-                    modules: [
-                        { title: "The Sin of Passivity", length: "Study" }
-                    ]
-                }
-            },
-            {
-                poster: "https://www.chessable.com/img/books/1560121721037544.png",
-                title: "The Woodpecker Method 2 (Positional)",
-                mission: "Automating Strategic Vision",
-                job: "Drill 1,000+ positional puzzles to make strategic intuition as fast as tactical vision.",
-                coach: "GM Axel Smith & Hans Tikkanen",
-                superpower: "Grandmaster Strategic Flow",
-                stats: "1,000 Positional Exercises",
-                benefits: "You will 'feel' the best positional moves without thinking, just like you see tactical forks.",
-                link: "https://www.chessable.com/the-woodpecker-method-2-positional/course/156012/",
-                courseDetails: {
-                    chapters: 15,
-                    length: "1,000 Exercises"
-                }
+                title: "Lifetime Repertoires: Stonewall Dutch",
+                job: "Build an impenetrable defense against 1.d4. Dictate the flow of the game with the GingerGM's aggressive Stonewall setup.",
+                coach: "GM Simon Williams",
+                level: "Intermediate/Advanced (1600-2200)",
+                superpower: "Impenetrable Defense",
+                link: "https://www.chessable.com/lifetime-repertoires-stonewall-dutch/course/25940/",
+                pgnPath: "Course Database/Month 6/Lifetime Repertoires Stonewall Dutch by GM Simon Williams-tiny/Lifetime Repertoires Stonewall Dutch.pgn",
+                htmlPath: "Course Database/Month 6/Lifetime Repertoires Stonewall Dutch by GM Simon Williams-tiny/Lifetime Repertoires Stonewall Dutch.html"
             }
         ]
     },
-
-    // ─── MONTH 7: PIECE COORDINATION ─────────────────────────────────────────────
     {
         month: 7,
-        reward: "Unlocked: The Harmony Master",
-        tasks: [
-            "Piece Coordination Mastery - 90m",
-            "Visualization: Knight Sight (Drills) - 15m",
-            "Zurich 1953: Guess-the-move - 40m",
-            "Opening: Benko (Full Repertoire) - 30m"
-        ],
+        theme: "Intuition & Punishment",
+        dailyFocus: "Positional Mistakes & Developing Intuition",
+        reward: "Unlocked: The Mind's Eye",
+        tasks: ["Intuition Building - 60m", "Crime & Punishment Analysis - 45m"],
         courses: [
             {
-                poster: "https://www.chessable.com/img/books/1034481668550504.png",
-                title: "The Art of Awakening Pieces",
-                mission: "Orchestrating the Attack",
-                job: "Make your pieces 'talk' to each other and coordinate for a crushing blow.",
-                coach: "CM Can Kabadayi",
-                superpower: "The Harmony Specialist",
-                stats: "4h 51m Video / 55 Exercises",
-                benefits: "You will discover how to bring your least active pieces into the game, creating a coordinated army that is greater than the sum of its parts.",
-                link: "https://www.chessable.com/the-art-of-awakening-pieces/course/103448/",
-                courseDetails: {
-                    chapters: 7,
-                    length: "4 hours 51 mins Video",
-                    quality: "Mastery / Dynamic",
-                    accolades: "The 'Secret Weapon' for piece activity.",
-                    modules: [
-                        { title: "Awakening: Pawn Breaks", length: "55 Exercises" },
-                        { title: "Sacrificing for Activation", length: "30 Exercises" }
-                    ]
-                }
+                title: "Developing Chess Intuition",
+                job: "Move beyond rigid rules. Master lesser-known concepts like 'Domination' to develop a professional sense of the position.",
+                coach: "GM Raven Sturt",
+                level: "Intermediate/Advanced (1600-2100)",
+                superpower: "GM Intuition",
+                link: "https://www.chessable.com/developing-chess-intuition-domination-and-other-lesser-known-positional-concepts/course/43085/",
+                pgnPath: "Course Database/Month 7/Developing Chess Intuition by GM Raven Sturt/Developing Chess Intuition by GM Raven Sturt.pgn",
+                htmlPath: "Course Database/Month 7/Developing Chess Intuition by GM Raven Sturt/Developing Chess Intuition by GM Raven Sturt.html"
             },
             {
-                poster: "https://www.chessable.com/img/books/823741668504044.png",
-                title: "The Art of Exchanging Pieces",
-                mission: "Strategic Trade Mastery",
-                job: "Learn when to trade and when to keep pieces, unlocking strategic dominance.",
-                coach: "CM Can Kabadayi",
-                superpower: "The Trade Master",
-                stats: "5h 58m Video / 421 Variations",
-                benefits: "You will master the subtle art of the trade, ensuring that every exchange leaves you with a superior position and a clearer path to victory.",
-                link: "https://www.chessable.com/art-of-exchanging-pieces/course/82374/",
-                courseDetails: {
-                    chapters: 11,
-                    length: "5 hours 58 mins Video",
-                    modules: [
-                        { title: "Exploiting Weaknesses", length: "Core Trade" },
-                        { title: "Endgame Transitions", length: "Application" }
-                    ]
-                }
+                title: "Chess Crime and Punishment",
+                job: "Learn how to systematically punish illogical and positional errors made by your opponents.",
+                coach: "CM Dr. Can Kabadayi",
+                level: "Intermediate (1500-1900)",
+                superpower: "Justice Served",
+                link: "https://www.chessable.com/chess-crime-and-punishment/course/103290/",
+                pgnPath: "Course Database/Month 7/Chess Crime and Punishment/Chess Crime and Punishment by CM Can Kabadayi.pgn",
+                htmlPath: "Course Database/Month 7/Chess Crime and Punishment/Chess Crime and Punishment by CM Can Kabadayi.html"
             },
             {
-                poster: "https://www.chessable.com/img/books/901911668504144.png",
-                title: "The Art of Burying Pieces",
-                mission: "Restrictive Prophylaxis",
-                job: "Learn to systematically immobilize enemy pieces by creating 'prisoners' on the board.",
-                coach: "CM Can Kabadayi",
-                superpower: "The Restriction Specialist",
-                stats: "4h 54m Video / 85 Puzzles",
-                benefits: "You will learn the dark art of restriction, leaving your opponent's pieces stranded and useless while you dominate the rest of the board.",
-                link: "https://www.chessable.com/the-art-of-burying-pieces/course/90191/",
-                courseDetails: {
-                    chapters: 15,
-                    length: "4 hours 54 mins Video",
-                    modules: [
-                        { title: "Burying the Fianchetto Knight", length: "Execution" },
-                        { title: "Burying Bishops with Pawn Breaks", length: "Advanced" }
-                    ]
-                }
+                title: "Calculation: Workbook",
+                job: "Practical application of calculation principles. Hundreds of exercises designed to build your tactical radar and precision.",
+                coach: "CM Azel Chua",
+                level: "Intermediate/Advanced (1600-2200)",
+                superpower: "Tactical Sharpness",
+                link: "https://www.chessable.com/calculation-a-workbook-for-tournament-players/course/150731/",
+                pgnPath: "Course Database/Month 7/Calculation - A Workbook for Tournament Players by CM Azel Chua/Calculation - A Workbook for Tournament Players by CM Azel Chua.pgn",
+                htmlPath: "Course Database/Month 7/Calculation - A Workbook for Tournament Players by CM Azel Chua/Calculation - A Workbook for Tournament Players by CM Azel Chua.html"
             }
         ]
     },
-
-    // ─── MONTH 8: ENDGAME MASTERY ─────────────────────────────────────────────────
     {
         month: 8,
-        reward: "Unlocked: The Threshold Breaker",
-        tasks: [
-            "Dvoretsky Manual Study - 90m",
-            "Visualization: Knight Pathfinding (h1 to a8) - 20m",
-            "Tactics: Lichess 2200+ difficulty - 45m",
-            "Maintenance: Patching Repertoire Gaps - 30m"
-        ],
+        theme: "Patterns & Flanks",
+        dailyFocus: "Positional Patterns & Bird's Opening",
+        reward: "Unlocked: The Pattern Recognizer",
+        tasks: ["Positional Pattern Drills - 60m", "LTR Bird Study - 60m"],
         courses: [
             {
-                poster: "https://www.chessable.com/img/books/430481668478491.png",
-                title: "Dvoretsky's Endgame Manual",
-                mission: "Entering the Top 1%",
-                job: "Master the theoretical endings that separate masters from amateurs.",
-                coach: "GM Karsten Müller & GM Erwin l'Ami",
-                superpower: "Theoretical Invincibility",
-                stats: "24h 8m Video / 840 Variations",
-                benefits: "You will achieve 'Grandmaster-level' endgame technique, entering every endgame with the absolute certainty that you can hold or win.",
-                link: "https://www.chessable.com/dvoretskys-endgame-manual-5th-edition/course/43048/",
-                courseDetails: {
-                    chapters: 16,
-                    length: "24 hours 8 mins Video",
-                    quality: "Legendary / World-Class",
-                    accolades: "Mandatory study for every aspiring Grandmaster.",
-                    modules: [
-                        { title: "Essential Pawn Endings", length: "Part I" },
-                        { title: "Practical Rook Endings", length: "The Big One" }
-                    ]
-                }
-            }
-        ]
-    },
-
-    // ─── MONTH 9: DEEP CALCULATION ────────────────────────────────────────────────
-    {
-        month: 9,
-        reward: "Unlocked: The Calculation Tank",
-        tasks: [
-            "Ramesh GM Prep Calc (Hard) - 90m",
-            "Unbreakable Defense (Nigmatov Brutality) - 30m",
-            "Visualization: Deep Boardless puzzles - 20m",
-            "Tactics: Lichess 'Long' Puzzles - 45m"
-        ],
-        courses: [
-            {
-                poster: "https://www.chessable.com/img/books/1495901695279640.png",
-                title: "Improve Your Chess Calculation",
-                mission: "The Grandmaster Bootcamp",
-                job: "Build deep variation stamina and candidate move discipline under GM Ramesh's elite system.",
-                coach: "GM Ramesh R.B.",
-                superpower: "The Calculation Tank",
-                stats: "18h 36m Video / Masterclass",
-                benefits: "You will build the mental stamina of a marathon runner, able to calculate deep, complex variations for hours without losing accuracy.",
-                link: "https://www.chessable.com/improve-your-chess-calculation/course/149590/",
-                courseDetails: {
-                    chapters: 5,
-                    length: "18 hours 36 mins Video",
-                    quality: "Legendary / High Stamina",
-                    accolades: "Taught by the coach of the World's youngest Grandmasters.",
-                    modules: [
-                        { title: "Deep Visualization", length: "Level 1" },
-                        { title: "Candidate Selection", length: "Level 2" }
-                    ]
-                }
-            }
-        ]
-    },
-
-    // ─── MONTH 10: GM THINKING PROCESS ───────────────────────────────────────────
-    {
-        month: 10,
-        reward: "Unlocked: The Grandmaster",
-        tasks: [
-            "Gelfand Decision Drills - 120m",
-            "Visualization: Knight Sight (2-move jumps) - 20m",
-            "Maintenance: Art of Multi-Purpose Moves - 30m",
-            "Tactics Maintenance: 2200+ Difficulty - 45m"
-        ],
-        courses: [
-            {
-                poster: "https://www.chessable.com/img/books/267021668540422.png",
-                title: "Positional Decision Making in Chess",
-                mission: "Thinking Like a World Challenger",
-                job: "Master prophylaxis, restriction, and multi-purpose moves to think exactly like a world-class GM.",
-                coach: "GM Boris Gelfand & GM Jacob Aagaard",
-                superpower: "The Gelfand Mindset",
-                stats: "278 Master Questions / 4.5 Stars",
-                benefits: "You will adopt the high-level decision-making process of a World Championship challenger, learning to balance static and dynamic factors perfectly.",
-                link: "https://www.chessable.com/positional-decision-making-in-chess/course/26702/",
-                courseDetails: {
-                    chapters: 3,
-                    length: "278 Master Exercises",
-                    quality: "Elite / Grandmaster Logic",
-                    accolades: "Winner of the ECF Book of the Year Award.",
-                    modules: [
-                        { title: "The Squeeze (Rubinstein)", length: "96 Puzzles" },
-                        { title: "Space Advantage", length: "82 Puzzles" }
-                    ]
-                }
-            }
-        ]
-    },
-
-    // ─── MONTH 11: REPERTOIRE MASTERY ────────────────────────────────────────────
-    {
-        month: 11,
-        reward: "Unlocked: The Repertoire King",
-        tasks: [
-            "Opening Mastery: All 4 Systems - 90m",
-            "Visualization: Memory Blindfold Drill - 30m",
-            "Maintenance: 2200+ Tactics - 45m",
-            "Analysis: Recent Pro Games Study - 30m"
-        ],
-        courses: [
-            {
-                poster: "https://www.chessable.com/img/books/217031668541244.png",
-                title: "Lifetime Repertoires - Bird's Opening",
-                mission: "The Opening Specialist",
-                job: "Lock in move-20 mastery for 1.f4 and catch 99% of opponents off-guard.",
-                coach: "GM Vjekoslav Živković & GM Banzea",
-                superpower: "Unshakeable Confidence",
-                stats: "20h Video / 647 Variations",
-                benefits: "You will achieve 'move-20' mastery in your primary weapon, ensuring you walk to every game with a significant psychological and theoretical edge.",
-                link: "https://www.chessable.com/lifetime-repertoires-birds-opening/course/21703/",
-                courseDetails: {
-                    chapters: 15,
-                    length: "20 hours Video",
-                    quality: "Elite / Specialized",
-                    accolades: "The definitive modern repertoire for the Bird's Opening.",
-                    modules: [
-                        { title: "The Bird Lasker", length: "Anti-Bird Logic" }
-                    ]
-                }
+                title: "The Positional Chess Patterns Manual",
+                job: "Internalize 300+ 'root' positional patterns. Build an expert-level radar for outposts, space, and pawn play.",
+                coach: "IM Alex Astaneh",
+                level: "Intermediate/Advanced (1500-2000)",
+                superpower: "Positional Vision",
+                link: "https://www.chessable.com/the-positional-chess-patterns-manual/course/243952/",
+                pgnPath: "Course Database/Month 8/The Positional Chess Patterns Manual - IM Alex Astaneh/The Positional Chess Patterns Manual - IM Alex Astenah.pgn",
+                htmlPath: "Course Database/Month 8/The Positional Chess Patterns Manual - IM Alex Astaneh/The Positional Chess Patterns Manual - IM Alex Astenah.html"
             },
             {
-                poster: "https://www.chessable.com/img/books/1175651668508842.png",
-                title: "The Benko Blueprint",
-                mission: "The Gambit Specialist",
-                job: "Master the most aggressive response to 1.d4 for master play.",
-                coach: "GM Milos Perunovic",
-                superpower: "Relentless Counterplay",
-                stats: "Elite GM Repertoire",
-                benefits: "You will master one of the most respected gambits in chess, learning how to generate relentless pressure from move 1.",
-                link: "https://www.chessable.com/the-benko-blueprint/course/117565/",
-                courseDetails: {
-                    chapters: 10,
-                    length: "Full Repertoire"
-                }
+                title: "Lifetime Repertoires: Bird's Opening",
+                job: "Master the aggressive 1.f4. Dictate the game from move one with a repertoire that sidesteps theoretical mainlines.",
+                coach: "GM Raven Sturt",
+                level: "Intermediate/Advanced (1600-2200)",
+                superpower: "Sky-High Aggression",
+                link: "https://www.chessable.com/lifetime-repertoires-birds-opening/course/42302/",
+                pgnPath: "Course Database/Month 8/Lifetime Repertoires - Bird's Opening/LTR BIRD (UPDATED VERSION).pgn",
+                htmlPath: "Course Database/Month 8/Lifetime Repertoires - Bird's Opening/LTR BIRD (UPDATED VERSION).html"
             }
         ]
     },
-
-    // ─── MONTH 12: TOURNAMENT SUMMIT ─────────────────────────────────────────────
     {
-        month: 12,
-        reward: "Unlocked: THE CHESS MASTER",
-        tasks: [
-            "Final Summit: Pump Up Your Rating - 60m",
-            "Visualization: Knight Pathfinding (Pre-round) - 20m",
-            "Maintenance: Opponent Prep Database - 30m",
-            "Tournament Play: Classical/OTB - 120m"
-        ],
+        month: 9,
+        theme: "Visualization & Strategy",
+        dailyFocus: "Deep Visualization & Endgame Strategy",
+        reward: "Unlocked: The Oracle",
+        tasks: ["Visualization Immersion - 60m", "Shereshevsky Strategy - 60m"],
         courses: [
             {
-                poster: "https://www.chessable.com/img/books/244301668525044.png",
-                title: "Pump Up Your Rating",
-                mission: "The Tournament Breakthrough",
-                job: "Peak your tactical and positional state for actual tournament domination.",
-                coach: "GM Axel Smith",
-                superpower: "Universal Tournament Master",
-                stats: "14h Video / 404 Exercises",
-                benefits: "You will peak your skills for the final 'summit', integrating everything you've learned into a cohesive, professional-level tournament performance.",
-                link: "https://www.chessable.com/pump-up-your-rating/course/24430/",
-                courseDetails: {
-                    chapters: 9,
-                    length: "14 hours Masterclass",
-                    quality: "Elite / Tournament Prep",
-                    accolades: "Award-winning curriculum for peaking at the 2400 level.",
-                    modules: [
-                        { title: "The List of Mistakes", length: "Crucial" },
-                        { title: "Dynamic Decision Making", length: "Elite" }
-                    ]
-                }
+                title: "Visualization: A Complete Guide",
+                job: "The definitive guide to visualization. Build the mental muscles needed to see variations 10+ moves ahead with crystal clarity.",
+                coach: "CM Azel Chua",
+                level: "Intermediate/Advanced (1400-2200)",
+                superpower: "Perfect Sight",
+                link: "https://chessable.com/course/150743",
+                pgnPath: "",
+                htmlPath: "Course Database/Month 9/Visualization A Complete Guide for Tournament Players/Visualization A Complete Guide for Tournament Players.html",
+                videos: [
+                    { title: "Visualisation Fundamentals", path: "Course Database/Month 9/Visualization A Complete Guide for Tournament Players/1) Visualisation Fundamentals.mp4" },
+                    { title: "Experience Peak Visualisation", path: "Course Database/Month 9/Visualization A Complete Guide for Tournament Players/2) Experience Peak Visualisation.mp4" },
+                    { title: "Training Methods & Resources", path: "Course Database/Month 9/Visualization A Complete Guide for Tournament Players/3) Training Methods   Resources.mp4" }
+                ]
+            },
+            {
+                title: "Endgame Strategy (Shereshevsky)",
+                job: "Master the principles that separate GM endgames from amateurs: 'the principle of two weaknesses' and 'do not hurry'.",
+                coach: "GM Sam Shankland",
+                level: "Advanced (1800-2300)",
+                superpower: "Deep Strategy",
+                link: "https://www.chessable.com/endgame-strategy-revised-and-expanded-edition/course/72871/",
+                pgnPath: "Course Database/Month 9/Endgame Strategy by Shereshevsky for NIC presented by GM Sam Shankland/Endgame Strategy (Revised and Expanded Edition)  -Shankland.pgn",
+                htmlPath: "Course Database/Month 9/Endgame Strategy by Shereshevsky for NIC presented by GM Sam Shankland/Endgame Strategy (Revised and Expanded Edition)  -Shankland.html"
+            }
+        ]
+    },
+    {
+        month: 10,
+        theme: "Automation & Tactics",
+        dailyFocus: "Tactical Speed & Strategy Instructors",
+        reward: "Unlocked: The Blitz Mind",
+        tasks: ["Woodpecker Cycle 1 - 90m", "Strategy Instructor Study - 60m"],
+        courses: [
+            {
+                title: "The Woodpecker Method: Tactics",
+                job: "Achieve tactical automation. Solve 1,000+ puzzles in rapid, decreasing cycles until recognition is instant.",
+                coach: "GM Smith & GM Tikkanen",
+                level: "Intermediate/Advanced (1500-2100)",
+                superpower: "Instant Recognition",
+                link: "https://www.chessable.com/the-woodpecker-method/course/10582/",
+                pgnPath: "Course Database/Month 10/The Woodpecker Method 1 - Tactical Play/The Woodpecker Method 1 - Tactical Play.pgn",
+                htmlPath: "Course Database/Month 10/The Woodpecker Method 1 - Tactical Play/The Woodpecker Method 1 - Tactical Play.html"
+            },
+            {
+                title: "Strategy Instructors (Vol 1-3)",
+                job: "Elite strategy training from world-class coaches. Master pawn majorities, minority attacks, and the exchange sacrifice.",
+                coach: "GM Grivas & GM Ramesh",
+                level: "Advanced/Master (1900-2400)",
+                superpower: "Elite Strategy",
+                link: "https://www.chessable.com/the-strategy-instructors-volume-1-pawn-majority-minority/course/244102/",
+                pgnPath: "Course Database/Month 10/The Strategy Instructors Volume 1/The Strategy Instructors Vol 1.pgn",
+                htmlPath: "Course Database/Month 10/The Strategy Instructors Volume 1/The Strategy Instructors Vol 1.html",
+                others: [
+                    { title: "Vol 2: Open Files", pgn: "Course Database/Month 10/The Strategy Instructors Volume 2/Strategy Instructors Vol.2 Open & Semi-Open Files & Forepost.pgn" },
+                    { title: "Vol 3: Exchange Sac", pgn: "Course Database/Month 10/The Strategy Instructors Volume 3/Strategy Instructors Vol.3 The Exchange Sacrifice.pgn" }
+                ]
+            }
+        ]
+    },
+    {
+        month: 11,
+        theme: "Structural Elite",
+        dailyFocus: "Advanced Structures & Positional Woodpecker",
+        reward: "Unlocked: The Structural Master",
+        tasks: ["Positional Woodpecker Cycle - 90m", "Rook Endgame Theory - 60m"],
+        courses: [
+            {
+                title: "The Woodpecker Method 2",
+                job: "Apply the Woodpecker method to positional play. Automate your sense of piece coordination and outposts.",
+                coach: "GM Smith & GM Tikkanen",
+                level: "Intermediate/Advanced (1600-2200)",
+                superpower: "Positional Automation",
+                link: "https://www.chessable.com/the-woodpecker-method-2-positional-play/course/184131/",
+                pgnPath: "Course Database/Month 11/The Woodpecker Method 2 - Positional Play/The Woodpecker Method 2 Positional Play.pgn",
+                htmlPath: "Course Database/Month 11/The Woodpecker Method 2 - Positional Play/The Woodpecker Method 2 Positional Play.html"
+            },
+            {
+                title: "Theoretical Rook Endgames",
+                job: "Master the most common and complex endgame type. Learn to defend and win rook endings like a Grandmaster.",
+                coach: "GM Sam Shankland",
+                level: "Advanced/Master (1800-2400)",
+                superpower: "Rook God",
+                link: "https://www.chessable.com/theoretical-rook-endgames/course/147376/",
+                pgnPath: "Course Database/Month 11/Theoretical Rook Endgames by Sam Shankland/Theoretical Rook Endgames by Sam Shankland.pgn",
+                htmlPath: "Course Database/Month 11/Theoretical Rook Endgames by Sam Shankland/Theoretical Rook Endgames by Sam Shankland.html"
+            }
+        ]
+    },
+    {
+        month: 12,
+        theme: "Elite Master",
+        dailyFocus: "Elite Calculation & Endgame Manual",
+        reward: "Unlocked: THE CHESS MASTER",
+        tasks: ["Ramesh Calculation Bootcamp - 120m", "Dvoretsky Mastery - 60m"],
+        courses: [
+            {
+                title: "Improve Your Chess Calculation",
+                job: "Elite-level calculation drills from the legendary GM coach of the Indian Olympic team.",
+                coach: "GM R.B. Ramesh",
+                level: "Advanced/Master (2000-2500)",
+                superpower: "Deep Calculation",
+                link: "https://www.chessable.com/improve-your-chess-calculation/course/93649/",
+                pgnPath: "Course Database/Month 12/Improve Your Chess Calculation - GM R.B. Ramesh/Improve Your Chess Calculation - GM R.B. Ramesh.pgn",
+                htmlPath: "Course Database/Month 12/Improve Your Chess Calculation - GM R.B. Ramesh/Improve Your Chess Calculation - GM R.B. Ramesh.html"
+            },
+            {
+                title: "Dvoretsky's Endgame Manual",
+                job: "The 'Bible' of endgames. Master the absolute limit of theoretical endgame knowledge.",
+                coach: "Mark Dvoretsky",
+                level: "Advanced/Master (2100-2600)",
+                superpower: "Endgame Invincibility",
+                link: "https://www.chessable.com/dvoretskys-endgame-manual-5th-edition/course/43048/",
+                pgnPath: "Course Database/Month 12/Dvoretsky's_Endgame_Manual_5th_edition_by_GM_Erwin_l'Ami_7z/Dvoretsky's Endgame Manual - 5th Edition.pgn",
+                htmlPath: "Course Database/Month 12/Dvoretsky's_Endgame_Manual_5th_edition_by_GM_Erwin_l'Ami_7z/Dvoretsky's Endgame Manual - 5th Edition.html"
             }
         ]
     }
 ];
 
-window.chessCurriculum = chessCurriculum;
+window.chessCurriculum = window.chessCurriculum || window.chessCurriculum; // Ensure global assignment

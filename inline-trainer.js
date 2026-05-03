@@ -21,6 +21,25 @@ let inlineAwaiting   = true;
 let currentTrainerMonth = null;
 let currentPGNText   = null;
 
+// --- HELPERS ---
+function sanitizePGN(pgn) {
+    console.log("[Inline Trainer] Sanitizing PGN (length:", pgn.length, ")");
+    // Strip technical debris and Z0 blockers
+    let s = pgn.replace(/\\\[\\\]/g, '');
+    s = s.replace(/\s+Z0\s+/g, ' ');
+    s = s.replace(/\bZ0\b/g, '');
+    
+    // Replace Chessable skip moves "1. --"
+    s = s.replace(/\d+\.\s+--\s+/g, ''); 
+    s = s.replace(/--/g, '');
+
+    // Ensure Setup tag for FENs
+    if (s.includes('[FEN ') && !s.includes('[SetUp ')) {
+        s = s.replace(/\[FEN/, '[SetUp "1"]\n[FEN');
+    }
+    return s.trim();
+}
+
 // ─── DOM Shortcuts ────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 const tUploadZone    = $('trainer-upload-zone');
@@ -116,7 +135,12 @@ function showGamePicker(games) {
 // ─── Load Game ────────────────────────────────────────────────────────────────
 function loadInlinePGN(pgn, startIdx = 0, savedScore = null) {
     inlineGame = new Chess();
-    if (!inlineGame.load_pgn(pgn)) { showT('Invalid PGN — please check the file.'); return; }
+    const sanitized = sanitizePGN(pgn);
+    if (!inlineGame.load_pgn(sanitized)) { 
+        console.error("[Inline Trainer] FAILED to load PGN:", sanitized);
+        showT('Invalid PGN — please check the file.'); 
+        return; 
+    }
 
     currentPGNText = pgn;
     inlineMoves    = inlineGame.history({ verbose: true });
